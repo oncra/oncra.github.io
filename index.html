@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" class="sr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  
+  <title>ONCRA - AGB Data App</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>ONCRA - AGB Data App</h1>
+  <div>
+      Lat min: <input type="text" id="latMin" value="54.31164">
+  </div>
+  <div>
+      Lat max: <input type="text" id="latMax" value="54.32164">
+  </div>
+  <div>
+      Lon min: <input type="text" id="lonMin" value="-3.02899">
+  </div>
+  <div>
+      Lon max: <input type="text" id="lonMax" value="-3.03899">
+  </div>
+  <button id="apiButton" onclick="handleApiButtonClick()">Call API</button>
+  <div id="viewer"></div>
+</body>
+<script src="scripts/coordinates.js"></script>
+<script src="scripts/cedaDataParser.js"></script>
+<script src="scripts/cedaClient.js"></script>
+<script src="main.js"></script>
+</html>

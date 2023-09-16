@@ -9,7 +9,8 @@ class CedaDataParser {
     return {
       agb: agb,
       lat: lat,
-      lon: lon
+      lon: lon,
+      agbMax: Math.max(...agb.map(x => Math.max(...x)))
     };
   }
 

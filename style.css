@@ -1,21 +1,144 @@
 body {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Inter', sans-serif;
   padding: 0;
   margin: 0;
+  color: #303030;
 }
 
-::selection      { background: rgba(255, 88, 88, 0.2); /* WebKit/Blink Browsers */ }
-::-moz-selection { background: rgba(255, 88, 88, 0.2); /* Gecko Browsers */ }
+::selection      { background: rgba(105, 135, 153, 0.2); /* WebKit/Blink Browsers */ }
+::-moz-selection { background: rgba(105, 135, 153, 0.2); /* Gecko Browsers */ }
 
 a {text-decoration: none;}
+
+#container {
+  /* border: 1px solid #888; */
+  width: 600px;
+  margin: 0 auto;
+}
+
+#header {
+  padding: 20px 0;
+  margin-bottom: 50px;
+  border-bottom: 3px solid #D9D9D9;
+}
+
+h1 {
+  color: #303030;
+  font-size: 40px;
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+#kmlRequirementText {
+  color: #303030;
+  font-size: 20px;
+  margin-bottom: 50px;
+}
+
+#exampleKMLFileButton {
+  font-size: 14px;
+  font-weight: bold;
+  background-color: #717D88;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin-left: 10px;
+  float: right;
+}
+
+#dropZoneInstructionText {
+  color: #303030;
+  font-size: 20px;
+  margin-bottom: 60px;
+}
+
+#dropZone {
+  border: 3px dashed #aaa;
+  background-color: #FAFAFA;
+  border-radius: 10px;
+  width: calc(100% - 6px);
+  height: 200px;
+  display: inline-block;
+  transition: 0.2s ease;
+  text-align: center;
+}
+
+#dropZone.active {
+  padding: 15px 30px;
+  margin-top: -15px;
+  margin-left: -30px;
+  margin-bottom: -15px;
+  background-color: #fffaeb;
+}
+
+#dropZoneTextContainer {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #101010;
+  cursor: default;
+}
+
+#dropZoneText_main {
+  font-size: 20px;
+}
+
+#dropZoneText_or {
+  font-size: 16px;
+  margin: 15px 0;
+}
+
+#kmlBrowseFileButton {
+  background: #FED617;
+  cursor: pointer;
+  display: inline-block;
+  padding: 15px 70px;
+  border-radius: 8px;
+  transition: 0.2s ease;
+  font-weight: bold;
+}
+
+#dropZoneError {
+  color: #ff4422;
+  text-align: center;
+  font-size: 16px;
+  height: 20px;
+}
+
+#kmlFileName {
+  text-align: center;
+  color: #000;
+  font-size: 16px;
+  font-weight: bold;
+  position: relative;
+  top: 40px;
+  height: 0;
+}
+
+#apiButton {
+  text-align: center;
+  background-color: #FED617;
+  font-weight: bold;
+  margin: 10px auto;
+  cursor: pointer;
+}
 
 #viewer {
   margin-top: 10px;
 }
 
-.tableCell {
-  display: inline-block;
-  width: 50px;
-  height: 30px;
-  text-align: center;
+h2 {
+  margin-bottom: 0;
+}
+
+#agbValueContainer {
+  background-color: red;
+}
+
+#agbMinValue {
+  float: left;
+}
+
+#agbMaxValue {
+  float: right;
 }

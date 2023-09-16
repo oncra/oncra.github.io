@@ -9,12 +9,16 @@ const coordinates = new Coordinates({
 
 const cedaClient = new CedaClient();
 const cedaDataParser = new CedaDataParser();
+const kmlReader = new KMLReader();
+let latMin;
+let latMax;
+let lonMin;
+let lonMax;
+
+const dropZoneError = document.querySelector("#dropZoneError");
+const kmlFileName = document.querySelector("#kmlFileName");
 
 const apiButton = document.querySelector("#apiButton");
-const latMinField = document.querySelector("#latMin");
-const latMaxField = document.querySelector("#latMax");
-const lonMinField = document.querySelector("#lonMin");
-const lonMaxField = document.querySelector("#lonMax");
 const viewer = document.querySelector("#viewer");
 
 let data2010;
@@ -23,11 +27,39 @@ let data2018;
 let data2019;
 let data2020;
 
-async function handleApiButtonClick() {
-  const latIndexMin = coordinates.lat2Index(parseFloat(latMinField.value));
-  const latIndexMax = coordinates.lat2Index(parseFloat(latMaxField.value));
-  const lonIndexMin = coordinates.lat2Index(parseFloat(lonMinField.value));
-  const lonIndexMax = coordinates.lat2Index(parseFloat(lonMaxField.value));
+let file;
+function onKMLChange (e) {
+  file = e.target.files[0];
+  dropZoneError.innerText = "";
+  kmlFileName.innerText = file.name;
+  kmlReader.parseDocument(file, onKMLParsed);
+}
+const agbMaxValueField = document.querySelector("#agbMaxValue");
+
+const kmlCanvas = new CanvasService(document.querySelector("#kmlCanvas"));
+const colourScaleCanvas = new CanvasService(document.querySelector("#colourScaleCanvas"));
+const agbCanvas_2010 = new CanvasService(document.querySelector("#agbCanvas_2010"));
+const agbCanvas_2017 = new CanvasService(document.querySelector("#agbCanvas_2017"));
+const agbCanvas_2018 = new CanvasService(document.querySelector("#agbCanvas_2018"));
+const agbCanvas_2019 = new CanvasService(document.querySelector("#agbCanvas_2019"));
+const agbCanvas_2020 = new CanvasService(document.querySelector("#agbCanvas_2020"));
+
+colourScaleCanvas.drawColourBar();
+
+function onKMLParsed() {
+  const polygon = kmlReader.filePolygon[0];
+  [latMin, latMax, lonMin, lonMax] = coordinates.polygon2LatLonRange(polygon);
+  const {xy, mPerLat, mPerLon} = coordinates.polygon2XY(polygon);
+  kmlCanvas.drawXY(xy);
+
+  apiButton.click();
+}
+
+async function callCedaEndpoints() {
+  const latIndexMin = coordinates.lat2Index(latMin);
+  const latIndexMax = coordinates.lat2Index(latMax);
+  const lonIndexMin = coordinates.lon2Index(lonMin);
+  const lonIndexMax = coordinates.lon2Index(lonMax);
 
   viewer.innerHTML = "Calling API to get AGB data... (could take up to 60 seconds)"
 
@@ -48,13 +80,12 @@ async function handleApiButtonClick() {
   data2019 = cedaDataParser.parse(response2019);
   data2020 = cedaDataParser.parse(response2020);
 
-  viewer.innerHTML = "Year: 2010" + dataToComponentsTable(data2010) + "<br>";
-  viewer.innerHTML += "Year: 2017" + dataToComponentsTable(data2017) + "<br>";
-  viewer.innerHTML += "Year: 2018" + dataToComponentsTable(data2018) + "<br>";
-  viewer.innerHTML += "Year: 2019" + dataToComponentsTable(data2019) + "<br>";
-  viewer.innerHTML += "Year: 2020" + dataToComponentsTable(data2020) + "<br>";
-}
+  const agbMax = Math.max(data2010.agbMax, data2017.agbMax, data2018.agbMax, data2019.agbMax, data2020.agbMax);
+  agbMaxValueField.innerText = `${agbMax} Mg/ha`;
 
-function dataToComponentsTable(data) {
-  return data.agb.map(line => "<div>" + line.map(value => "<div class='tableCell'>" + value + "</div>").join("") + "</div>").join("");
+  agbCanvas_2010.drawAGB(data2010, agbMax);
+  agbCanvas_2017.drawAGB(data2017, agbMax);
+  agbCanvas_2018.drawAGB(data2018, agbMax);
+  agbCanvas_2019.drawAGB(data2019, agbMax);
+  agbCanvas_2020.drawAGB(data2020, agbMax);
 }

@@ -46,6 +46,10 @@ h1 {
   float: right;
 }
 
+#exampleKMLFileButton:hover {
+  background-color: #556069;
+}
+
 #dropZoneInstructionText {
   color: #303030;
   font-size: 20px;
@@ -98,6 +102,10 @@ h1 {
   font-weight: bold;
 }
 
+#kmlBrowseFileButton:hover {
+  background: #ffe66a;
+}
+
 #dropZoneError {
   color: #ff4422;
   text-align: center;
@@ -123,16 +131,64 @@ h1 {
   cursor: pointer;
 }
 
-#viewer {
-  margin-top: 10px;
+#dataTableBorderWrapper {
+  border-radius: 8px; 
+  overflow: hidden; 
+  border: 1px solid #B9B9B9;
+  margin-bottom: 80px;
+  margin-top: 15px;
+}
+
+#dataTable {
+  border-collapse: collapse;
+  text-align: center;
+  width: 100%;
+}
+
+#dataTable td {
+  border: 1px solid #B9B9B9;
+  margin: 0;
+  padding: 10px 15px;
+}
+
+#dataTable th {
+  border: 1px solid #B9B9B9;
+  border-top: none;
+  margin: 0;
+  padding: 10px 15px;
+  background-color: #f3faf9;
+}
+
+table#dataTable tr:last-child td {
+  border-bottom: none;
+}
+
+table#dataTable tr td:first-child {
+  border-left: none;
+}
+
+table#dataTable tr th:first-child {
+  border-left: none;
+}
+
+table#dataTable tr td:last-child {
+  border-right: none;
+}
+
+table#dataTable tr th:last-child {
+  border-right: none;
+}
+
+#dataTable td {
+  background-color: #777;
+}
+
+#dataTable .dataTable_yearCell {
+  background-color: #fff;
 }
 
 h2 {
   margin-bottom: 0;
-}
-
-#agbValueContainer {
-  background-color: red;
 }
 
 #agbMinValue {

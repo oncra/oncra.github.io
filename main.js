@@ -19,7 +19,6 @@ const dropZoneError = document.querySelector("#dropZoneError");
 const kmlFileName = document.querySelector("#kmlFileName");
 
 const apiButton = document.querySelector("#apiButton");
-const viewer = document.querySelector("#viewer");
 
 let data2010;
 let data2017;
@@ -35,6 +34,11 @@ function onKMLChange (e) {
   kmlReader.parseDocument(file, onKMLParsed);
 }
 const agbMaxValueField = document.querySelector("#agbMaxValue");
+const dataTable_2010 = document.querySelector("#dataTable_2010");
+const dataTable_2017 = document.querySelector("#dataTable_2017");
+const dataTable_2018 = document.querySelector("#dataTable_2018");
+const dataTable_2019 = document.querySelector("#dataTable_2019");
+const dataTable_2020 = document.querySelector("#dataTable_2020");
 
 const kmlCanvas = new CanvasService(document.querySelector("#kmlCanvas"));
 const colourScaleCanvas = new CanvasService(document.querySelector("#colourScaleCanvas"));
@@ -61,17 +65,18 @@ async function callCedaEndpoints() {
   const lonIndexMin = coordinates.lon2Index(lonMin);
   const lonIndexMax = coordinates.lon2Index(lonMax);
 
-  viewer.innerHTML = "Calling API to get AGB data... (could take up to 60 seconds)"
-
-  console.log([latIndexMax, latIndexMin, lonIndexMin, lonIndexMax]);
-  console.log("calling api...");
+  updateDataFetchToLoading(dataTable_2010);
+  updateDataFetchToLoading(dataTable_2017);
+  updateDataFetchToLoading(dataTable_2018);
+  updateDataFetchToLoading(dataTable_2019);
+  updateDataFetchToLoading(dataTable_2020);
 
   const [response2010, response2017, response2018, response2019, response2020] = await Promise.all([
-    cedaClient.getAGB(2010, latIndexMax, latIndexMin, lonIndexMin, lonIndexMax).then(function(val) { viewer.innerHTML += "<br>2010 done"; return val}),
-    cedaClient.getAGB(2017, latIndexMax, latIndexMin, lonIndexMin, lonIndexMax).then(function(val) { viewer.innerHTML += "<br>2017 done"; return val}),
-    cedaClient.getAGB(2018, latIndexMax, latIndexMin, lonIndexMin, lonIndexMax).then(function(val) { viewer.innerHTML += "<br>2018 done"; return val}),
-    cedaClient.getAGB(2019, latIndexMax, latIndexMin, lonIndexMin, lonIndexMax).then(function(val) { viewer.innerHTML += "<br>2019 done"; return val}),
-    cedaClient.getAGB(2020, latIndexMax, latIndexMin, lonIndexMin, lonIndexMax).then(function(val) { viewer.innerHTML += "<br>2020 done"; return val}),
+    cedaClient.getAGB(2010, latIndexMax, latIndexMin, lonIndexMin, lonIndexMax).then(function(val) { updateDataFetchStatus(dataTable_2010, val); return val}),
+    cedaClient.getAGB(2017, latIndexMax, latIndexMin, lonIndexMin, lonIndexMax).then(function(val) { updateDataFetchStatus(dataTable_2017, val); return val}),
+    cedaClient.getAGB(2018, latIndexMax, latIndexMin, lonIndexMin, lonIndexMax).then(function(val) { updateDataFetchStatus(dataTable_2018, val); return val}),
+    cedaClient.getAGB(2019, latIndexMax, latIndexMin, lonIndexMin, lonIndexMax).then(function(val) { updateDataFetchStatus(dataTable_2019, val); return val}),
+    cedaClient.getAGB(2020, latIndexMax, latIndexMin, lonIndexMin, lonIndexMax).then(function(val) { updateDataFetchStatus(dataTable_2020, val); return val}),
   ]);
 
   data2010 = cedaDataParser.parse(response2010);
@@ -88,4 +93,15 @@ async function callCedaEndpoints() {
   agbCanvas_2018.drawAGB(data2018, agbMax);
   agbCanvas_2019.drawAGB(data2019, agbMax);
   agbCanvas_2020.drawAGB(data2020, agbMax);
+}
+
+function updateDataFetchToLoading(field) {
+  field.innerText = field.dataset.value + " ⏳";
+}
+
+function updateDataFetchStatus(field, value) {
+  if (value.startsWith("Error")) {
+    return field.innerText = field.dataset.value + " ❌";
+  }
+  field.innerText = field.dataset.value + " ✅";
 }

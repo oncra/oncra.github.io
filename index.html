@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   
-  <title>ONCRA - above ground biomass removal app</title>
+  <title>ONCRA - Above Ground Carbon Data Tool</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
@@ -55,7 +55,46 @@
     
     <div id="apiButton" class="button"  style="display: none;" onclick="callCedaEndpoints()">Call CEDA Endpoint</div>
 
-    <div id="viewer"></div>
+    <div id="dataTableBorderWrapper">
+      <table id="dataTable">
+        <tr>
+          <th>Year</th>
+          <th>Above Ground Biomass <br>(Mg/ha)</th>
+          <th>Carbon <br>(Mg/ha)</th>
+          <th>CO2 Equivalent <br>(Mg/ha)</th>
+        </tr>
+        <tr>
+          <td id="dataTable_2010" class="dataTable_yearCell" data-value="2010">2010</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td id="dataTable_2017" class="dataTable_yearCell" data-value="2017">2017</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td id="dataTable_2018" class="dataTable_yearCell" data-value="2018">2018</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td id="dataTable_2019" class="dataTable_yearCell" data-value="2019">2019</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td id="dataTable_2020" class="dataTable_yearCell" data-value="2020">2020</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </table>
+    </div>
 
     <h2>Colour Scale</h2>
     <canvas id="colourScaleCanvas" class="agbCanvas" width="600" height="20"></canvas>

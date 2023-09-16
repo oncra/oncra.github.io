@@ -67,7 +67,7 @@ class CanvasService {
     const width = this.canvas.width;
     const height = this.canvas.height;
 
-    const scaling = Math.min((width - this.#padding * 2)  / agbData.lon.length, (height- this.#padding * 2) / agbData.lat.length);
+    const scaling = Math.min(width  / agbData.lon.length, height / agbData.lat.length);
 
     const data = agbData.agb;
 

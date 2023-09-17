@@ -33,7 +33,6 @@ function onKMLChange (e) {
   kmlFileName.innerText = file.name;
   kmlReader.parseDocument(file, onKMLParsed);
 }
-const agbMaxValueField = document.querySelector("#agbMaxValue");
 const dataTable_2010 = document.querySelector("#dataTable_2010");
 const dataTable_2017 = document.querySelector("#dataTable_2017");
 const dataTable_2018 = document.querySelector("#dataTable_2018");
@@ -41,20 +40,16 @@ const dataTable_2019 = document.querySelector("#dataTable_2019");
 const dataTable_2020 = document.querySelector("#dataTable_2020");
 
 const kmlCanvas = new CanvasService(document.querySelector("#kmlCanvas"));
-const colourScaleCanvas = new CanvasService(document.querySelector("#colourScaleCanvas"));
-const agbCanvas_2010 = new CanvasService(document.querySelector("#agbCanvas_2010"));
-const agbCanvas_2017 = new CanvasService(document.querySelector("#agbCanvas_2017"));
-const agbCanvas_2018 = new CanvasService(document.querySelector("#agbCanvas_2018"));
-const agbCanvas_2019 = new CanvasService(document.querySelector("#agbCanvas_2019"));
-const agbCanvas_2020 = new CanvasService(document.querySelector("#agbCanvas_2020"));
-
-colourScaleCanvas.drawColourBar();
+const agbCanvas = new CanvasService(document.querySelector("#agbCanvas"));
+const innerOuterMapCanvas = new CanvasService(document.querySelector("#innerOuterMapCanvas"));
+let XYData;
+let polygon;
 
 function onKMLParsed() {
-  const polygon = kmlReader.filePolygon[0];
+  polygon = kmlReader.filePolygon[0];
   [latMin, latMax, lonMin, lonMax] = coordinates.polygon2LatLonRange(polygon);
-  const {xy, mPerLat, mPerLon} = coordinates.polygon2XY(polygon);
-  kmlCanvas.drawXY(xy);
+  XYData = coordinates.polygon2XY(polygon);
+  kmlCanvas.drawXY(XYData.xy);
 
   apiButton.click();
 }
@@ -86,17 +81,14 @@ async function callCedaEndpoints() {
   data2020 = cedaDataParser.parse(response2020);
 
   const agbMax = Math.max(data2010.agbMax, data2017.agbMax, data2018.agbMax, data2019.agbMax, data2020.agbMax);
-  agbMaxValueField.innerText = `${agbMax} Mg/ha`;
 
-  agbCanvas_2010.drawAGB(data2010, agbMax);
-  agbCanvas_2017.drawAGB(data2017, agbMax);
-  agbCanvas_2018.drawAGB(data2018, agbMax);
-  agbCanvas_2019.drawAGB(data2019, agbMax);
-  agbCanvas_2020.drawAGB(data2020, agbMax);
+  agbCanvas.drawAGB(data2020, polygon, XYData, agbMax);
+
+  innerOuterMapCanvas.drawInnerOuterMap(data2020, polygon, XYData.mPerLat / XYData.mPerLon);
 }
 
 function updateDataFetchToLoading(field) {
-  field.innerText = field.dataset.value + " ⏳";
+  field.innerHTML = field.dataset.value + " <div class='loader'></div>";
 }
 
 function updateDataFetchStatus(field, value) {

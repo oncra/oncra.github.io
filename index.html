@@ -96,30 +96,15 @@
       </table>
     </div>
 
-    <h2>Colour Scale</h2>
-    <canvas id="colourScaleCanvas" class="agbCanvas" width="600" height="20"></canvas>
-    <div id="agbValueContainer">
-      <div id="agbMinValue">0</div>
-      <div id="agbMaxValue">to be determined</div>
-    </div>
-    
-    <br>
-    <h2>2010</h2>
-    <canvas id="agbCanvas_2010" class="agbCanvas" width="600" height="400"></canvas>
+    <h2>AGB Map of Year 2020</h2>
+    <canvas id="agbCanvas" width="600" height="900"></canvas>
 
-    <h2>2017</h2>
-    <canvas id="agbCanvas_2017" class="agbCanvas" width="600" height="400"></canvas>
-
-    <h2>2018</h2>
-    <canvas id="agbCanvas_2018" class="agbCanvas" width="600" height="400"></canvas>
-
-    <h2>2019</h2>
-    <canvas id="agbCanvas_2019" class="agbCanvas" width="600" height="400"></canvas>
-
-    <h2>2020</h2>
-    <canvas id="agbCanvas_2020" class="agbCanvas" width="600" height="400"></canvas>
+    <h2>Inside Outside Polygon map</h2>
+    <canvas id="innerOuterMapCanvas" width="600" height="800"></canvas>
   </div>
 </body>
+<script src="scripts/rayCastingService.js"></script>
+<script src="scripts/mathService.js"></script>
 <script src="scripts/dragService.js"></script>
 <script src="scripts/canvasService.js"></script>
 <script src="scripts/kmlReader.js"></script>

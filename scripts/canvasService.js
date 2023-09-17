@@ -151,25 +151,26 @@ class CanvasService {
     const latUnit = Math.abs(mean(diff(agbData.lat)));
     const lonUnit = Math.abs(mean(diff(agbData.lon)));
 
-    let xGrids = agbData.lon.map(v => v - lonUnit / 2);
-    xGrids.push(xGrids[xGrids.length-1] + lonUnit);
-    const xGridsRange = xGrids[xGrids.length-1] - xGrids[0];
-
-    let yGrids = agbData.lat.map(v => v + latUnit / 2);
-    yGrids.push(yGrids[yGrids.length-1] - latUnit);
-    const yGridsRange = yGrids[0] - yGrids[yGrids.length-1];
-    
     const xPolygon = polygon.map(v => v.lon);
     const yPolygon = polygon.map(v => v.lat);
+
+    let xGrids = agbData.lon.map(v => v - lonUnit / 2);
+    xGrids.push(xGrids[xGrids.length-1] + lonUnit);
+    
+    let yGrids = agbData.lat.map(v => v + latUnit / 2);
+    yGrids.push(yGrids[yGrids.length-1] - latUnit);
+    
+    const horizontalCrossCountMatrix = getHorizontalCrossCountMatrix(xGrids, yGrids, xPolygon, yPolygon);
+    const verticalCrossCountMatrix = getVerticalCrossCountMatrix(xGrids, yGrids, xPolygon, yPolygon);
+    const gridCrossDataMatrix = getGridCrossDataMatrix(horizontalCrossCountMatrix, verticalCrossCountMatrix);
+    
+    const xGridsRange = xGrids[xGrids.length-1] - xGrids[0];
+    const yGridsRange = yGrids[0] - yGrids[yGrids.length-1];
     
     const shiftX = xGrids[0];
     const yGridsMax = yGrids[0];
 
-    const scaling = Math.min(width / xGridsRange, height / yGridsRange);
-
-    const horizontalCrossCountMatrix = getHorizontalCrossCountMatrix(xGrids, yGrids, xPolygon, yPolygon);
-    const verticalCrossCountMatrix = getVerticalCrossCountMatrix(xGrids, yGrids, xPolygon, yPolygon);
-    const gridCrossDataMatrix = getGridCrossDataMatrix(horizontalCrossCountMatrix, verticalCrossCountMatrix);
+    const scaling = Math.min(width / xGridsRange, height / (yGridsRange * latOverLonScaling));
 
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 

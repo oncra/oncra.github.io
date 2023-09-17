@@ -1,3 +1,23 @@
+function getGridCrossDataMatrixFromAGBPolygon(agbData, polygon) {
+  const latUnit = Math.abs(mean(diff(agbData.lat)));
+  const lonUnit = Math.abs(mean(diff(agbData.lon)));
+
+  const xPolygon = polygon.map(v => v.lon);
+  const yPolygon = polygon.map(v => v.lat);
+
+  let xGrids = agbData.lon.map(v => v - lonUnit / 2);
+  xGrids.push(xGrids[xGrids.length-1] + lonUnit);
+  
+  let yGrids = agbData.lat.map(v => v + latUnit / 2);
+  yGrids.push(yGrids[yGrids.length-1] - latUnit);
+  
+  const horizontalCrossCountMatrix = getHorizontalCrossCountMatrix(xGrids, yGrids, xPolygon, yPolygon);
+  const verticalCrossCountMatrix = getVerticalCrossCountMatrix(xGrids, yGrids, xPolygon, yPolygon);
+  const gridCrossDataMatrix = getGridCrossDataMatrix(horizontalCrossCountMatrix, verticalCrossCountMatrix);
+
+  return gridCrossDataMatrix;
+}
+
 function getHorizontalCrossCountMatrix(xGrids, yGrids, xPolygon, yPolygon) {
   let horizontalCrossCountMatrix = yGrids.map(_ => xGrids.map(_ => 0));
 

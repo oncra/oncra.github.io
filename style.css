@@ -179,14 +179,6 @@ table#dataTable tr th:last-child {
   border-right: none;
 }
 
-#dataTable td {
-  background-color: #777;
-}
-
-#dataTable .dataTable_yearCell {
-  background-color: #fff;
-}
-
 h2 {
   margin-bottom: 0;
 }

@@ -55,6 +55,9 @@
     
     <div id="apiButton" class="button"  style="display: none;" onclick="callCedaEndpoints()">Call CEDA Endpoint</div>
 
+    <p id="partialGridWarning" style="display: none">⚠️ The values in the table below only take into account fully covered data grids (shown as green in the "Inside Outside Polygon Map" down below), 
+      it doesn't take into account partially covered data grids (shown as orange) yet.
+    </p>
     <div id="dataTableBorderWrapper">
       <table id="dataTable">
         <tr>
@@ -96,11 +99,15 @@
       </table>
     </div>
 
-    <h2>AGB Map of Year 2020</h2>
-    <canvas id="agbCanvas" width="600" height="900"></canvas>
+    <div id="agbCanvasContainer" style="display: none;">
+      <h2>AGB Map of Year 2020</h2>
+      <canvas id="agbCanvas" width="600" height="900"></canvas>
+    </div>
 
-    <h2>Inside Outside Polygon map</h2>
-    <canvas id="innerOuterMapCanvas" width="600" height="800"></canvas>
+    <div id="innerOuterMapCanvasContainer" style="display: none;">
+      <h2>Inside Outside Polygon Map</h2>
+      <canvas id="innerOuterMapCanvas" width="600" height="800"></canvas>
+    </div>
   </div>
 </body>
 <script src="scripts/rayCastingService.js"></script>

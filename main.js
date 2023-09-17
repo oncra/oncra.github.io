@@ -19,13 +19,11 @@ const dropZoneError = document.querySelector("#dropZoneError");
 const kmlFileName = document.querySelector("#kmlFileName");
 
 const apiButton = document.querySelector("#apiButton");
+const mapYear = document.querySelector("#mapYear");
 
-let data2010;
-let data2017;
-let data2018;
-let data2019;
-let data2020;
+let agbData = {};
 let gridCrossDataMatrix;
+let agbMax;
 
 let file;
 function onKMLChange (e) {
@@ -34,11 +32,20 @@ function onKMLChange (e) {
   kmlFileName.innerText = file.name;
   kmlReader.parseDocument(file, onKMLParsed);
 }
-const dataTable_2010 = document.querySelector("#dataTable_2010");
-const dataTable_2017 = document.querySelector("#dataTable_2017");
-const dataTable_2018 = document.querySelector("#dataTable_2018");
-const dataTable_2019 = document.querySelector("#dataTable_2019");
-const dataTable_2020 = document.querySelector("#dataTable_2020");
+
+const dataTableYearCell = [
+  document.querySelector("#dataTable_2010"),
+  document.querySelector("#dataTable_2017"),
+  document.querySelector("#dataTable_2018"),
+  document.querySelector("#dataTable_2019"),
+  document.querySelector("#dataTable_2020"),
+];
+const agbDataFieldNames = ["data2010", "data2017", "data2018", "data2019", "data2020"];
+const years = [2010, 2017, 2018, 2019, 2020];
+
+dataTableYearCell.forEach((tableField, index) => {
+  tableField.parentNode.onclick = () => drawAGBDataIfExist(tableField, agbData[agbDataFieldNames[index]]);
+});
 
 const agbCanvasContainer = document.querySelector("#agbCanvasContainer");
 const innerOuterMapCanvasContainer = document.querySelector("#innerOuterMapCanvasContainer");
@@ -65,59 +72,51 @@ async function callCedaEndpoints() {
   const lonIndexMin = coordinates.lon2Index(lonMin);
   const lonIndexMax = coordinates.lon2Index(lonMax);
 
-  updateDataFetchToLoading(dataTable_2010);
-  updateDataFetchToLoading(dataTable_2017);
-  updateDataFetchToLoading(dataTable_2018);
-  updateDataFetchToLoading(dataTable_2019);
-  updateDataFetchToLoading(dataTable_2020);
+  dataTableYearCell.forEach(tableField => updateDataFetchToLoading(tableField));
 
-  const [response2010, response2017, response2018, response2019, response2020] = await Promise.all([
-    cedaClient.getAGB(2010, latIndexMax, latIndexMin, lonIndexMin, lonIndexMax).then(function(val) { updateDataFetchStatus(dataTable_2010, val); return val}),
-    cedaClient.getAGB(2017, latIndexMax, latIndexMin, lonIndexMin, lonIndexMax).then(function(val) { updateDataFetchStatus(dataTable_2017, val); return val}),
-    cedaClient.getAGB(2018, latIndexMax, latIndexMin, lonIndexMin, lonIndexMax).then(function(val) { updateDataFetchStatus(dataTable_2018, val); return val}),
-    cedaClient.getAGB(2019, latIndexMax, latIndexMin, lonIndexMin, lonIndexMax).then(function(val) { updateDataFetchStatus(dataTable_2019, val); return val}),
-    cedaClient.getAGB(2020, latIndexMax, latIndexMin, lonIndexMin, lonIndexMax).then(function(val) { updateDataFetchStatus(dataTable_2020, val); return val}),
-  ]);
+  await Promise.all(dataTableYearCell.map((tableField, index) => 
+    cedaClient.getAGB(years[index], latIndexMax, latIndexMin, lonIndexMin, lonIndexMax)
+      .then(function(val) { 
+        handleFetchYearComplete(tableField, val, agbDataFieldNames[index]); 
+        return val
+      })
+  ));
 
-  data2010 = cedaDataParser.parse(response2010);
-  data2017 = cedaDataParser.parse(response2017);
-  data2018 = cedaDataParser.parse(response2018);
-  data2019 = cedaDataParser.parse(response2019);
-  data2020 = cedaDataParser.parse(response2020);
-
-  const agbMax = Math.max(data2010.agbMax, data2017.agbMax, data2018.agbMax, data2019.agbMax, data2020.agbMax);
-
-  agbCanvas.drawAGB(data2020, polygon, XYData, agbMax);
-
-  innerOuterMapCanvas.drawInnerOuterMap(data2020, polygon, XYData.mPerLat / XYData.mPerLon);
+  agbMax = Math.max(
+    agbData.data2010?.agbMax ?? 0, 
+    agbData.data2017?.agbMax ?? 0, 
+    agbData.data2018?.agbMax ?? 0, 
+    agbData.data2019?.agbMax ?? 0, 
+    agbData.data2020?.agbMax ?? 0);
   
-  gridCrossDataMatrix = getGridCrossDataMatrixFromAGBPolygon(data2020, polygon);
+
+  [latestData, latestDataIndex] = getLatestYearAgbData(agbData);
+  dataTableYearCell[latestDataIndex].parentNode.click();
+
+  innerOuterMapCanvas.drawInnerOuterMap(latestData, polygon, XYData.mPerLat / XYData.mPerLon);
 
   showHideOptionalData('block');
+}
 
-  agbValue2010 = getAGBAverageFromGridCrossDataAndAgbData(gridCrossDataMatrix, data2010);
-  agbValue2017 = getAGBAverageFromGridCrossDataAndAgbData(gridCrossDataMatrix, data2017);
-  agbValue2018 = getAGBAverageFromGridCrossDataAndAgbData(gridCrossDataMatrix, data2018);
-  agbValue2019 = getAGBAverageFromGridCrossDataAndAgbData(gridCrossDataMatrix, data2019);
-  agbValue2020 = getAGBAverageFromGridCrossDataAndAgbData(gridCrossDataMatrix, data2020);
+function getLatestYearAgbData(agbData) {
+  for (var i=agbDataFieldNames.length-1; i>=0; i--) {
+    const data = agbData[agbDataFieldNames[i]];
+    if (data !== undefined) {
+      return [data, i];
+    }
+  }
+}
 
-  dataTable_2010.parentNode.children[1].innerText = toDecimalPlace(agbValue2010, 2);
-  dataTable_2017.parentNode.children[1].innerText = toDecimalPlace(agbValue2017, 2);
-  dataTable_2018.parentNode.children[1].innerText = toDecimalPlace(agbValue2018, 2);
-  dataTable_2019.parentNode.children[1].innerText = toDecimalPlace(agbValue2019, 2);
-  dataTable_2020.parentNode.children[1].innerText = toDecimalPlace(agbValue2020, 2);
-
-  dataTable_2010.parentNode.children[2].innerText = getCarbon(agbValue2010);
-  dataTable_2017.parentNode.children[2].innerText = getCarbon(agbValue2017);
-  dataTable_2018.parentNode.children[2].innerText = getCarbon(agbValue2018);
-  dataTable_2019.parentNode.children[2].innerText = getCarbon(agbValue2019);
-  dataTable_2020.parentNode.children[2].innerText = getCarbon(agbValue2020);
-
-  dataTable_2010.parentNode.children[3].innerText = getCO2Equivalent(agbValue2010);
-  dataTable_2017.parentNode.children[3].innerText = getCO2Equivalent(agbValue2017);
-  dataTable_2018.parentNode.children[3].innerText = getCO2Equivalent(agbValue2018);
-  dataTable_2019.parentNode.children[3].innerText = getCO2Equivalent(agbValue2019);
-  dataTable_2020.parentNode.children[3].innerText = getCO2Equivalent(agbValue2020);
+function getAgbMax(agbData) {
+  let agbMax = 0;
+  for (var i=0; i<agbDataFieldNames.length; i++) {
+    const data = agbData[agbDataFieldNames[i]];
+    const dataAgbMax = data?.agbMax ?? 0;
+    if (dataAgbMax > agbMax) {
+      agbMax = dataAgbMax;
+    }
+  }
+  return agbMax;
 }
 
 function updateDataFetchToLoading(field) {
@@ -126,18 +125,52 @@ function updateDataFetchToLoading(field) {
     field.parentNode.children[i].innerText = "";
   }
 
+  field.parentNode.classList.remove("active");
   showHideOptionalData('none');
 }
 
-function updateDataFetchStatus(field, value) {
+function handleFetchYearComplete(tableField, value, agbDataFieldName) {
+  const isSuccess = updateDataFetchStatus(tableField, value);
+  if (!isSuccess) return;
+  
+  parsedData = cedaDataParser.parse(value);
+  agbData[agbDataFieldName] = parsedData;
+  gridCrossDataMatrix = getGridCrossDataMatrixFromAGBPolygon(parsedData, polygon);
+  agbValue = getAGBAverageFromGridCrossDataAndAgbData(gridCrossDataMatrix, parsedData);
+
+  tableField.parentNode.children[1].innerText = toDecimalPlace(agbValue, 2);
+  tableField.parentNode.children[2].innerText = getCarbon(agbValue);
+  tableField.parentNode.children[3].innerText = getCO2Equivalent(agbValue);
+}
+
+function updateDataFetchStatus(tableField, value) {
   if (value.startsWith("Error")) {
-    return field.innerText = field.dataset.value + " ❌";
+    tableField.innerText = tableField.dataset.value + " ❌";
+    return false;
   }
-  field.innerText = field.dataset.value + " ✅";
+  tableField.innerText = tableField.dataset.value + " ✅";
+  return true;
 }
 
 function showHideOptionalData(displayMode) {
   partialGridWarning.style.display = displayMode;
   agbCanvasContainer.style.display = displayMode;
   innerOuterMapCanvasContainer.style.display = displayMode;
+}
+
+function drawAGBDataIfExist(childCell, data) {
+  console.log("plot data: ")
+  console.log(data);
+
+  if (data == undefined) return;
+  
+  const currentRow = document.querySelector("tr.active");
+  if (currentRow !== null) currentRow.classList.remove("active");
+
+  const selectedRow = childCell.parentNode;
+  selectedRow.classList.add("active");
+  mapYear.innerText = selectedRow.children[0].dataset.value
+  
+
+  agbCanvas.drawAGB(data, polygon, XYData, agbMax);
 }

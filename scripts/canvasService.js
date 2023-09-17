@@ -85,7 +85,7 @@ class CanvasService {
   }
 
   drawColourBarOnAGB(data, latUnit, XYData, scaling, width, colorBarHeight, agbMax) {
-    let y = (data.length + 1) * latUnit * XYData.mPerLat * scaling;
+    let y = (data.length) * latUnit * XYData.mPerLat * scaling + 5;
     for (var i = 0; i < width; i++) {
       const value = i / width;
 
@@ -102,22 +102,17 @@ class CanvasService {
     this.ctx.font = "16px Inter";
     this.ctx.fillText("0", 0, y);
 
-    let textString = `Max Value`;
+    let textString = `AGB ${agbMax}`;
     let textWidth = this.ctx.measureText(textString).width;
     this.ctx.fillText(textString, width - textWidth, y);
 
     y += 20;
-    textString = `= AGB ${agbMax} Mg/ha`;
+    textString = `Carbon ${getCarbon(agbMax)}`;
     textWidth = this.ctx.measureText(textString).width;
     this.ctx.fillText(textString, width - textWidth, y);
 
     y += 20;
-    textString = `= Carbon ${getCarbon(agbMax)} Mg/ha`;
-    textWidth = this.ctx.measureText(textString).width;
-    this.ctx.fillText(textString, width - textWidth, y);
-
-    y += 20;
-    textString = `= CO2 Equivalent ${getCO2Equivalent(agbMax)} Mg/ha`;
+    textString = `CO2 Equivalent ${getCO2Equivalent(agbMax)}`;
     textWidth = this.ctx.measureText(textString).width;
     this.ctx.fillText(textString, width - textWidth, y);
   }

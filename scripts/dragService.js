@@ -10,7 +10,7 @@ function dropHandler(ev) {
   }
 
   const item = ev.dataTransfer.items[0];
-  if (item.kind !== "file" || item.type !== 'application/vnd.google-earth.kml+xml') {
+  if (item.kind !== "file" || item.type.includes('kml')) {
     dropZoneError.innerText = "Upload must be a .kml file."
     return;
   }

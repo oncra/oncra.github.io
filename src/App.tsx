@@ -10,6 +10,7 @@ import { CedaData } from './models/CedaData';
 import { Coordinate } from './models/Coordinate';
 import { XY } from './models/XY';
 import KMLFilePreviewer from './components/kmlFilePreviewer/KMLFilePreviewer';
+import { RowStatus } from './models/RowStatus';
 
 preventDefaultDragDropBehaviour();
 
@@ -19,7 +20,7 @@ function App() {
   const [agbData, setAgbData] = useState<(CedaData | null)[]>(availableYears.map(() => null));
   const [polygon, setPolygon] = useState<Coordinate[]>([]);
   const [XY, setXY] = useState<XY | null>(null);
-  const [isFetching, setIsFetching] = useState(availableYears.map(() => false));
+  const [rowsStatus, setRowsStatus] = useState<(RowStatus)[]>(availableYears.map(() => RowStatus.Empty));
   const [selectedYear, setSelectedYear] = useState<number | null>(null);
   const [kmlFileName, setKmlFileName] = useState<string | null>(null);
   
@@ -33,7 +34,7 @@ function App() {
         setAgbData={setAgbData} 
         setPolygon={setPolygon} 
         setXY={setXY} 
-        setIsFetching={setIsFetching} 
+        setRowsStatus={setRowsStatus} 
         setSelectedYear={setSelectedYear}
         setKmlFileName={setKmlFileName}/>
 
@@ -47,7 +48,7 @@ function App() {
 
       <MainTable 
         agbData={agbData} 
-        isFetching={isFetching} 
+        rowsStatus={rowsStatus} 
         selectedYear={selectedYear} 
         setSelectedYear={setSelectedYear}/>
 

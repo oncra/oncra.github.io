@@ -133,6 +133,7 @@ const ColourMap = ({width, height, selectedYear, agbData, XY} : Props) => {
 
     const selectedYearIndex = availableYears.indexOf(selectedYear);
     const cedaData = agbData[selectedYearIndex];
+    
     if (cedaData == null || XY == null) return;
 
     const agbMax = Math.max(...agbData.map(cedaData => cedaData == null 

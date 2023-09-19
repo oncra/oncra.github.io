@@ -10,17 +10,18 @@ import { availableYears } from '../../App';
 import { CedaData } from '../../models/CedaData';
 import { Coordinate } from '../../models/Coordinate';
 import { XY } from '../../models/XY';
+import { RowStatus } from '../../models/RowStatus';
 
 interface Props {
   setAgbData: Dispatch<SetStateAction<(CedaData | null)[]>>,
   setPolygon: Dispatch<SetStateAction<Coordinate[]>>,
   setXY: Dispatch<SetStateAction<XY | null>>,
-  setIsFetching: Dispatch<SetStateAction<boolean[]>>,
+  setRowsStatus: Dispatch<SetStateAction<RowStatus[]>>,
   setSelectedYear: Dispatch<SetStateAction<number | null>>,
   setKmlFileName: Dispatch<SetStateAction<string | null>>
 }
 
-const DropZone = ({setAgbData, setPolygon, setXY, setIsFetching, setSelectedYear, setKmlFileName}: Props) => {
+const DropZone = ({setAgbData, setPolygon, setXY, setRowsStatus, setSelectedYear, setKmlFileName}: Props) => {
   const dropZoneRef = useRef<HTMLDivElement>(null);
 
   const handleDrop = async (event: DragEvent<HTMLDivElement>): Promise<void> => {
@@ -59,12 +60,21 @@ const DropZone = ({setAgbData, setPolygon, setXY, setIsFetching, setSelectedYear
     setXY(XY);
 
     const latLonRange = polygon2LatLonRange(polygon);
-    setIsFetching((isFetching) => isFetching.map(() => true));
+    setRowsStatus((rowsStatus) => rowsStatus.map(() => RowStatus.Fetching));
     setAgbData((agbData) => agbData.map(() => null));
     setSelectedYear(null);
 
     availableYears.forEach(async (year, index) => {
       const cedaResponse = await callCedaEndpoint(year, latLonRange);
+      if (cedaResponse == null) {
+        setRowsStatus((rowsStatus) => {
+          const rowsStatusClone = [...rowsStatus];
+          rowsStatusClone[index] = RowStatus.Failed;
+          return rowsStatusClone;
+        });
+        return;
+      }
+
       const cedaData = parseCedaResponse(cedaResponse, year);
       
       setAgbData((agbData) => {
@@ -73,10 +83,10 @@ const DropZone = ({setAgbData, setPolygon, setXY, setIsFetching, setSelectedYear
         return agbDataClone;
       });
 
-      setIsFetching((isFetching) => {
-        const isFetchingClone = [...isFetching];
-        isFetchingClone[index] = false;
-        return isFetchingClone;
+      setRowsStatus((rowsStatus) => {
+        const rowsStatusClone = [...rowsStatus];
+        rowsStatusClone[index] = RowStatus.Done;
+        return rowsStatusClone;
       });
 
       setSelectedYear((selectedYear) => {

@@ -1,7 +1,7 @@
 import { LatLonRange } from "../../models/LatLonRange";
 import { getSecondsElapsed } from "../TimeUtils";
 
-const retryTimeoutSeconds = 60;
+const retryTimeoutSeconds = 1;
 
 const clientParams = {
   lat0: 80,
@@ -12,7 +12,7 @@ const clientParams = {
   lonCount: 405000
 };
 
-export const callCedaEndpoint = async (year: number, latLonRange: LatLonRange): Promise<string> => {
+export const callCedaEndpoint = async (year: number, latLonRange: LatLonRange): Promise<string | null> => {
   const latIndexStart = lat2Index(latLonRange.latMax);
   const latIndexEnd = lat2Index(latLonRange.latMin);
   const lonIndexStart = lon2Index(latLonRange.lonMin);
@@ -28,6 +28,8 @@ export const callCedaEndpoint = async (year: number, latLonRange: LatLonRange): 
   while (response.status !== 200 && response.status !== 400 && getSecondsElapsed(startTime) < retryTimeoutSeconds) {
     response = await fetch(url);
   }
+
+  if (response.status !== 200) return null;
   
   const str = await response.text();
   return str;

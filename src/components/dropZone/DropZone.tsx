@@ -16,10 +16,11 @@ interface Props {
   setPolygon: Dispatch<SetStateAction<Coordinate[]>>,
   setXY: Dispatch<SetStateAction<XY | null>>,
   setIsFetching: Dispatch<SetStateAction<boolean[]>>,
-  setSelectedYear: Dispatch<SetStateAction<number | null>>
+  setSelectedYear: Dispatch<SetStateAction<number | null>>,
+  setKmlFileName: Dispatch<SetStateAction<string | null>>
 }
 
-const DropZone = ({setAgbData, setPolygon, setXY, setIsFetching, setSelectedYear}: Props) => {
+const DropZone = ({setAgbData, setPolygon, setXY, setIsFetching, setSelectedYear, setKmlFileName}: Props) => {
   const dropZoneRef = useRef<HTMLDivElement>(null);
 
   const handleDrop = async (event: DragEvent<HTMLDivElement>): Promise<void> => {
@@ -48,6 +49,9 @@ const DropZone = ({setAgbData, setPolygon, setXY, setIsFetching, setSelectedYear
   const restoreDropZone = () => dropZoneRef.current?.classList.remove('active');
 
   const loadFileAndCallEndpoint = async (file: File) => {
+    if (file == undefined) return;
+    setKmlFileName(file.name);
+
     const polygon = await parseKMLFile(file);
     setPolygon(polygon);
     

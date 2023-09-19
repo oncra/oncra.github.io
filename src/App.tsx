@@ -9,11 +9,11 @@ import { preventDefaultDragDropBehaviour } from './scripts/CommonUtils';
 import { CedaData } from './models/CedaData';
 import { Coordinate } from './models/Coordinate';
 import { XY } from './models/XY';
+import KMLFilePreviewer from './components/kmlFilePreviewer/KMLFilePreviewer';
 
 preventDefaultDragDropBehaviour();
 
 export const availableYears = [2010, 2017, 2018, 2019, 2020];
-// export const availableYears = [2019, 2020];
 
 function App() {
   const [agbData, setAgbData] = useState<(CedaData | null)[]>(availableYears.map(() => null));
@@ -21,17 +21,43 @@ function App() {
   const [XY, setXY] = useState<XY | null>(null);
   const [isFetching, setIsFetching] = useState(availableYears.map(() => false));
   const [selectedYear, setSelectedYear] = useState<number | null>(null);
+  const [kmlFileName, setKmlFileName] = useState<string | null>(null);
   
   return (
     <div className='mainContainer'>
       <Header />
       <h1>Above Ground Carbon <br />Data Tool</h1>
       <Instruction />
-      <DropZone setAgbData={setAgbData} setPolygon={setPolygon} setXY={setXY} setIsFetching={setIsFetching} setSelectedYear={setSelectedYear}/>
+
+      <DropZone 
+        setAgbData={setAgbData} 
+        setPolygon={setPolygon} 
+        setXY={setXY} 
+        setIsFetching={setIsFetching} 
+        setSelectedYear={setSelectedYear}
+        setKmlFileName={setKmlFileName}/>
+
+      <KMLFilePreviewer 
+        width={600} 
+        height={100} 
+        kmlFileName={kmlFileName}
+        XY={XY}/>
 
       <p>don't trust the values in the table below yet, still working on it 👍</p>
-      <MainTable agbData={agbData} isFetching={isFetching} selectedYear={selectedYear} setSelectedYear={setSelectedYear}/>
-      <ColourMap width={600} height={600} selectedYear={selectedYear} agbData={agbData} polygon={polygon} XY={XY}/>
+
+      <MainTable 
+        agbData={agbData} 
+        isFetching={isFetching} 
+        selectedYear={selectedYear} 
+        setSelectedYear={setSelectedYear}/>
+
+      <ColourMap 
+        width={600} 
+        height={600} 
+        selectedYear={selectedYear} 
+        agbData={agbData} 
+        polygon={polygon} 
+        XY={XY}/>
     </div>
   )
 }

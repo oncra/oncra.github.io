@@ -76,7 +76,7 @@ const drawColourMap = (cedaData: CedaData, XY: XY, agbMax: number) => {
 
 function drawColourBarOnColourMap(gridY: number[], gridYUnit: number, width: number, color1: number[], color0: number[], colorBarHeight: number, agbMax: number) {
   let y = Math.max(...gridY) - gridYUnit/2 + 10;
-  for (var i = 0; i < width; i++) {
+  for (let i = 0; i < width; i++) {
     const value = i / width;
 
     const r = Math.round(color1[0] * value + color0[0] * (1 - value));
@@ -89,7 +89,7 @@ function drawColourBarOnColourMap(gridY: number[], gridYUnit: number, width: num
 
   y += colorBarHeight + 20;
   ctx.fillStyle = "#303030";
-  ctx.font = "16px sans-serif";
+  ctx.font = "16px inter";
   
   ctx.fillText("0", 0, y);
 
@@ -142,13 +142,13 @@ const ColourMap = ({width, height, selectedYear, agbData, XY} : Props) => {
     
     drawColourMap(cedaData, XY, agbMax);
     
-  }, [selectedYear, agbData]);
+  }, [selectedYear, agbData, XY]);
     
   return (
     <>
       {(selectedYear != null) && <div id="colourMapContainer">
         <h2>AGB Map of Year <div id="mapYear">{selectedYear}</div></h2>
-        <canvas id="colourMap" ref={canvasRef} width={width} height={height}></canvas>
+        <canvas ref={canvasRef} width={width} height={height}></canvas>
       </div>}
     </>
   )

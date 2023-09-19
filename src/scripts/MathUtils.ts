@@ -13,3 +13,7 @@ export const mean = (arr: number[]) => {
 export const range = (arr: number[]) => {
   return Math.max(...arr) - Math.min(...arr);
 }
+
+export const makeArray = (a: number, b: number) => {
+  return Array.from({length: b - a + 1}, (_, i) => a + i);
+}

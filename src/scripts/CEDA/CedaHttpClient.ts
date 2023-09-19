@@ -3,7 +3,7 @@ import { getSecondsElapsed } from "../TimeUtils";
 
 const retryTimeoutSeconds = 1;
 
-const clientParams = {
+export const clientParams = {
   lat0: 80,
   lat1: -60,
   latCount: 157500,
@@ -35,14 +35,14 @@ export const callCedaEndpoint = async (year: number, latLonRange: LatLonRange): 
   return str;
 }
 
-const lat2Index = (lat: number): number => {
+export const lat2Index = (lat: number): number => {
   const index = (lat - clientParams.lat0) * clientParams.latCount / 
     (clientParams.lat1 - clientParams.lat0);
 
   return Math.floor(index);
 }
 
-const lon2Index = (lon: number): number => {
+export const lon2Index = (lon: number): number => {
   const index = (lon - clientParams.lon0) * clientParams.lonCount / 
     (clientParams.lon1 - clientParams.lon0);
 

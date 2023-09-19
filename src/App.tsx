@@ -11,6 +11,7 @@ import { Coordinate } from './models/Coordinate';
 import { XY } from './models/XY';
 import KMLFilePreviewer from './components/kmlFilePreviewer/KMLFilePreviewer';
 import { RowStatus } from './models/RowStatus';
+import InnerOuterMap from './components/innerOuterMap/InnerOuterMap';
 
 preventDefaultDragDropBehaviour();
 
@@ -57,7 +58,13 @@ function App() {
         height={600} 
         selectedYear={selectedYear} 
         agbData={agbData} 
-        polygon={polygon} 
+        polygon={polygon}
+        XY={XY}/>
+
+      <InnerOuterMap 
+        width={600} 
+        height={600} 
+        polygon={polygon}
         XY={XY}/>
     </div>
   )

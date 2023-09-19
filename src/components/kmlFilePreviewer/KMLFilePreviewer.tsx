@@ -50,7 +50,7 @@ const KMLFilePreviewer = ({width, height, kmlFileName, XY}: Props) => {
     ctx.lineWidth = 3;
     ctx.beginPath();
 
-    for (var i=1; i<x.length; i++)
+    for (let i=1; i<x.length; i++)
     {
       ctx.moveTo(x[i-1], y[i-1])
       ctx.lineTo(x[i], y[i]);

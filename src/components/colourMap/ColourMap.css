@@ -5,6 +5,10 @@
   margin-left: 5px;
 }
 
-#colourMap {
-  background-color: green;
+#colourMapContainer h2 {
+  text-align: center;
+}
+
+#colourMapContainer {
+  margin-top: 70px;
 }

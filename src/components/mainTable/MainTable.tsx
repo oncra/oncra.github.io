@@ -2,25 +2,42 @@ import { availableYears } from '../../App';
 import './MainTable.css'
 import LoadingSpinner from '../loadingSpinner/LoadingSpinner';
 import { CedaData } from '../../models/CedaData';
+import { Dispatch, SetStateAction } from 'react';
 
 interface Props {
   agbData: (CedaData | null) [],
-  isFetching: boolean[]
+  isFetching: boolean[],
+  selectedYear: number | null,
+  setSelectedYear: Dispatch<SetStateAction<number | null>>
 }
 
-const MainTable = ({agbData, isFetching}: Props) => {
-  const tableRows = availableYears.map((year, index) => {
-    const agbMax = agbData[index]?.agbMax
+const getCarbon = (agb: number | null | undefined) => agb ? agb / 2 : null;
+const getCO2 = (agb: number | null | undefined) => agb ? agb / 2 * 44 / 12 : null;
 
-    const loadingSpinner = isFetching[index] && (<LoadingSpinner />);
-    const completionTick = (!isFetching[index] && agbData[index] !== null) && (<>✅</>);
+const MainTable = ({agbData, isFetching, selectedYear, setSelectedYear}: Props) => {
+  const tableRows = availableYears.map((year, index) => {
+    const agbDatum = agbData[index];
+
+    const agbMax = agbDatum?.agbMax
+    const isFetchingRow = isFetching[index];
+
+    const loadingSpinner = isFetchingRow && (<LoadingSpinner />);
+    const completionTick = (!isFetchingRow && agbDatum !== null) && (<>✅</>);
     
+    const handleClick = () => {setSelectedYear(year)};
+    const isSelectedYear = selectedYear == year;
+    const className = (agbDatum !== null && !isFetchingRow && isSelectedYear) ? 'active' : '';
+
+    const agb = agbMax;
+    const carbon = getCarbon(agb);
+    const co2 = getCO2(agb);
+
     return (
-      <tr key={year}>
+      <tr key={year} onClick={handleClick} className={className}>
         <td>{year} {loadingSpinner} {completionTick}</td>
-        <td>{agbMax}</td>
-        <td></td>
-        <td></td>
+        <td>{agb?.toFixed(2)}</td>
+        <td>{carbon?.toFixed(2)}</td>
+        <td>{co2?.toFixed(2)}</td>
       </tr>
     );
   })

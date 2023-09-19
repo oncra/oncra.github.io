@@ -9,3 +9,7 @@ export const sum = (arr: number[]) => {
 export const mean = (arr: number[]) => {
   return sum(arr) / arr.length;
 }
+
+export const range = (arr: number[]) => {
+  return Math.max(...arr) - Math.min(...arr);
+}

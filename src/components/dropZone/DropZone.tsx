@@ -3,20 +3,23 @@ import './DropZone.css'
 import FileSelector from '../fileSelector/FileSelector';
 import { parseKMLFile } from '../../scripts/KMLReader';
 import ReactDOM from 'react-dom';
-import { polygon2LatLonRange } from '../../scripts/PolygonUtils';
+import { polygon2LatLonRange, polygon2XY } from '../../scripts/PolygonUtils';
 import { callCedaEndpoint } from '../../scripts/CEDA/CedaHttpClient';
 import { parseCedaResponse } from '../../scripts/CEDA/CedaResponseParser';
 import { availableYears } from '../../App';
 import { CedaData } from '../../models/CedaData';
 import { Coordinate } from '../../models/Coordinate';
+import { XY } from '../../models/XY';
 
 interface Props {
   setAgbData: Dispatch<SetStateAction<(CedaData | null)[]>>,
   setPolygon: Dispatch<SetStateAction<Coordinate[]>>,
+  setXY: Dispatch<SetStateAction<XY | null>>,
   setIsFetching: Dispatch<SetStateAction<boolean[]>>,
+  setSelectedYear: Dispatch<SetStateAction<number | null>>
 }
 
-const DropZone = ({setAgbData, setPolygon, setIsFetching}: Props) => {
+const DropZone = ({setAgbData, setPolygon, setXY, setIsFetching, setSelectedYear}: Props) => {
   const dropZoneRef = useRef<HTMLDivElement>(null);
 
   const handleDrop = async (event: DragEvent<HTMLDivElement>): Promise<void> => {
@@ -47,8 +50,14 @@ const DropZone = ({setAgbData, setPolygon, setIsFetching}: Props) => {
   const loadFileAndCallEndpoint = async (file: File) => {
     const polygon = await parseKMLFile(file);
     setPolygon(polygon);
+    
+    const XY = polygon2XY(polygon);
+    setXY(XY);
+
     const latLonRange = polygon2LatLonRange(polygon);
     setIsFetching((isFetching) => isFetching.map(() => true));
+    setAgbData((agbData) => agbData.map(() => null));
+    setSelectedYear(null);
 
     availableYears.forEach(async (year, index) => {
       const cedaResponse = await callCedaEndpoint(year, latLonRange);
@@ -65,6 +74,13 @@ const DropZone = ({setAgbData, setPolygon, setIsFetching}: Props) => {
         isFetchingClone[index] = false;
         return isFetchingClone;
       });
+
+      setSelectedYear((selectedYear) => {
+        if (selectedYear == null || year > selectedYear) {
+          return year;
+        }
+        return selectedYear;
+      })
     });
   }
 

@@ -1,0 +1,17 @@
+.bigYellowButton {
+  background-color: #FED617;
+  cursor: pointer;
+  display: inline-block;
+  padding: 15px 70px;
+  border-radius: 8px;
+  transition: 0.2s ease;
+  font-weight: bold;
+}
+
+.bigYellowButton:hover {
+  background-color: #ffe66a;
+}
+
+.hiddenFileSelector {
+  display: none;
+}

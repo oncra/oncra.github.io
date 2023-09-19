@@ -1,4 +1,11 @@
-## ONCRA - AGB Data App
+### To run the page locally, run:
+```
+npm run dev
+```
 
-https://oncra.github.io
 
+### To deploy to GitHub Pages, run the command:
+```
+npm run deploy
+```
+so that it'll be deployed to a new branch `gh-pages`.

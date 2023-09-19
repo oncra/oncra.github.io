@@ -1,0 +1,10 @@
+#mapYear {
+  background-color: #eee;
+  display: inline-block;
+  padding: 5px 10px;
+  margin-left: 5px;
+}
+
+#colourMap {
+  background-color: green;
+}

@@ -1,0 +1,26 @@
+.instruction {
+  font-size: 20px;
+  margin-top: 50px;
+}
+
+.smallGrayButton {
+  background-color: #717D88;
+  display: inline-block;
+  font-size: 14px;
+  font-weight: bold;
+  color: #FFF;
+  padding: 8px 12px;
+  border-radius: 8px;
+}
+
+.smallGrayButton:hover {
+  background-color: #556069;
+}
+
+#exampleKMLFile {
+  float: right;
+}
+
+.instruction div {
+  margin-bottom: 50px;
+}

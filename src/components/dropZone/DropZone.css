@@ -1,0 +1,33 @@
+.dropZone {
+  border: 3px dashed #aaa;
+  background-color: #FAFAFA;
+  border-radius: 10px;
+  width: calc(100% - 6px);
+  height: 200px;
+  transition: 0.2s ease;
+  text-align: center;
+  display: inline-block;
+}
+
+.dropZone.active {
+  padding: 15px 30px;
+  margin-left: -30px;
+  margin-top: -15px;
+  margin-bottom: -15px;
+  background-color: #fffaeb;
+}
+
+.alignVertical {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.dropZone .dropFileHere {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.dropZone .or {
+  margin: 15px 0;
+}

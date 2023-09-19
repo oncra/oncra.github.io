@@ -1,0 +1,12 @@
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  color: #303030;
+}
+
+::selection      { background: rgba(105, 135, 153, 0.2); /* WebKit/Blink Browsers */ }
+::-moz-selection { background: rgba(105, 135, 153, 0.2); /* Gecko Browsers */ }
+
+a {
+  text-decoration: none;
+}

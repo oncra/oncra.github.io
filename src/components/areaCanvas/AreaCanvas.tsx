@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import './AreaCanvas.css'
+import { calculateArea } from './scripts/AreaUtils';
 
 let canvas: HTMLCanvasElement;
 let ctx: CanvasRenderingContext2D;
@@ -8,50 +9,7 @@ const squareLength = 200;
 const width = 600;
 const height = 600;
 
-const squareCoordinates = [
-  [width/2 - squareLength/2, height/2 - squareLength/2],
-  [width/2 - squareLength/2, height/2 + squareLength/2],
-  [width/2 + squareLength/2, height/2 + squareLength/2],
-  [width/2 + squareLength/2, height/2 - squareLength/2]
-];
-
-const AreaCanvas = () => {
-  const canvasRef = useRef(null);
-
-  useEffect(() => {
-    if (canvasRef.current == null) return;
-
-    canvas = canvasRef.current;
-    ctx = canvas.getContext('2d')!;
-
-    drawDraggablePolygon();
-  }, []);
-
-  return (
-    <>
-      <h2>Draggable Polygon Area Experiment</h2>
-      <canvas id='areaCanvas' ref={canvasRef} width={width} height={height}></canvas>
-    </>
-  )
-}
-
-export default AreaCanvas
-
-function drawPixel(squareCoordinates: number[][]) {
-  ctx.strokeStyle = "#000";
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-
-  for (let i = 0; i < squareCoordinates.length; i++) {
-    const prevPoint = squareCoordinates[(i - 1 + squareCoordinates.length) % squareCoordinates.length];
-    ctx.moveTo(prevPoint[0], prevPoint[1]);
-    ctx.lineTo(squareCoordinates[i][0], squareCoordinates[i][1]);
-  }
-  ctx.stroke();
-  ctx.closePath();
-}
-
-interface Point {
+export interface Point {
   x: number,
   y: number
 }
@@ -92,6 +50,49 @@ const poly = () => ({
 
 const polygon = poly();
 
+const pixel: Point[] = [
+  {x: width/2 - squareLength/2, y: height/2 - squareLength/2},
+  {x: width/2 - squareLength/2, y: height/2 + squareLength/2},
+  {x: width/2 + squareLength/2, y: height/2 + squareLength/2},
+  {x: width/2 + squareLength/2, y: height/2 - squareLength/2}
+];
+
+const AreaCanvas = () => {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    if (canvasRef.current == null) return;
+
+    canvas = canvasRef.current;
+    ctx = canvas.getContext('2d')!;
+
+    drawDraggablePolygon();
+  }, []);
+
+  return (
+    <>
+      <h2>Draggable Polygon Area Experiment</h2>
+      <canvas id='areaCanvas' ref={canvasRef} width={width} height={height}></canvas>
+    </>
+  )
+}
+
+export default AreaCanvas
+
+function drawPixel(pixel: Point[]) {
+  ctx.strokeStyle = "#000";
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+
+  for (let i = 0; i < pixel.length; i++) {
+    const prevPoint = pixel[(i - 1 + pixel.length) % pixel.length];
+    ctx.moveTo(prevPoint.x, prevPoint.y);
+    ctx.lineTo(pixel[i].x, pixel[i].y);
+  }
+  ctx.stroke();
+  ctx.closePath();
+}
+
 function drawDraggablePolygon() {
   requestAnimationFrame(update)
 
@@ -125,7 +126,7 @@ function drawDraggablePolygon() {
     if (mouse.update) {
       cursor = "crosshair";
       ctx.clearRect(0,0,canvas.width,canvas.height);
-      drawPixel(squareCoordinates);
+      drawPixel(pixel);
 
       if (!dragging) {  activePoint = polygon.closest(mouse) }
       if (activePoint === undefined && mouse.button) {
@@ -134,8 +135,8 @@ function drawDraggablePolygon() {
       } else if(activePoint) {
           if (mouse.button) {
               if(dragging) {
-                  activePoint.x += mouse.x - mouse.lx;
-                  activePoint.y += mouse.y - mouse.ly;
+                  activePoint.x = mouse.x;
+                  activePoint.y = mouse.y;
               } else {  dragging = true }
           } else { dragging = false }
       }
@@ -149,6 +150,22 @@ function drawDraggablePolygon() {
       mouse.ly = mouse.y;
       canvas.style.cursor = cursor;
       mouse.update = false;
+
+      if (polygon.points.length > 2) {
+        const area = calculateArea(polygon.points);
+        const pixelArea = calculateArea(pixel);
+
+        ctx.fillStyle = "#303030";
+        ctx.font = "16px inter";
+
+        ctx.fillText(`Pixel's Area: 1.00`, 10, 25);
+
+        ctx.fillStyle = "blue";
+        ctx.fillText(`Polygon's Area: ${(area / pixelArea)}`, 10, 50);
+
+        ctx.fillStyle = "#303030";
+        ctx.fillText(`Overlap Area: ??`, 10, 75);
+      }
     }
     requestAnimationFrame(update)
   }

@@ -1,3 +1,11 @@
+### Setup
+First, install [node](https://nodejs.org/en) and [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
+
+Then install the relevant project dependencies 👍
+```
+npm i
+```
+
 ### To run the page locally, run:
 ```
 npm run dev

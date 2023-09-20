@@ -26,12 +26,12 @@ const poly = () => ({
     for (const p of this.points) { ctx.lineTo(p.x,p.y) }
     ctx.closePath();
     for (const p of this.points) {
-      ctx.moveTo(p.x + 4,p.y);
-      ctx.arc(p.x,p.y,4,0,Math.PI *2);
+      ctx.moveTo(p.x + 6,p.y);
+      ctx.arc(p.x,p.y,6,0,Math.PI *2);
     }
     ctx.stroke();
   },
-  closest(pos: Point, dist = 8) {
+  closest(pos: Point, dist = 12) {
     var i = 0, index = -1;
     dist *= dist;
     for (const p of this.points) {
@@ -101,7 +101,7 @@ function drawDraggablePolygon() {
     const bounds = canvas.getBoundingClientRect();
     mouse.x = e.pageX - bounds.left - scrollX;
     mouse.y = e.pageY - bounds.top - scrollY;
-    mouse.button = e.type === "mousedown" ? true : e.type === "mouseup" ? false : mouse.button;
+    mouse.button = e.type === "mousedown" ? true : e.type === "mouseup" ? false : mouse.button;    
     mouse.update = true;
   }
 
@@ -112,7 +112,7 @@ function drawDraggablePolygon() {
   ctx.lineWidth = 2;
   ctx.strokeStyle = "blue";
   
-  function drawCircle(pos: Point,color="red",size=8){
+  function drawCircle(pos: Point,color="red",size=12){
     ctx.strokeStyle = color;
     ctx.beginPath();
     ctx.arc(pos.x,pos.y,size,0,Math.PI *2);

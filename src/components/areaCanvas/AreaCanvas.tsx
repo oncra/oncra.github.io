@@ -1,6 +1,8 @@
 import { useEffect, useRef } from 'react';
 import './AreaCanvas.css'
 import { calculateArea } from './scripts/AreaUtils';
+import { getPolygonsIntersection } from './scripts/IntersectionUtils';
+import { sum } from '../../scripts/MathUtils';
 
 let canvas: HTMLCanvasElement;
 let ctx: CanvasRenderingContext2D;
@@ -79,18 +81,31 @@ const AreaCanvas = () => {
 
 export default AreaCanvas
 
-function drawPixel(pixel: Point[]) {
-  ctx.strokeStyle = "#000";
-  ctx.lineWidth = 1;
+function drawPolygon(polygon: Point[], colour: string = "#000", lineWidth: number = 1) {
+  if (polygon == undefined) return;
+  
+
+  ctx.strokeStyle = colour;
+  ctx.lineWidth = lineWidth;
   ctx.beginPath();
 
-  for (let i = 0; i < pixel.length; i++) {
-    const prevPoint = pixel[(i - 1 + pixel.length) % pixel.length];
+  for (let i = 0; i < polygon.length; i++) {
+    const prevPoint = polygon[(i - 1 + polygon.length) % polygon.length];
     ctx.moveTo(prevPoint.x, prevPoint.y);
-    ctx.lineTo(pixel[i].x, pixel[i].y);
+    ctx.lineTo(polygon[i].x, polygon[i].y);
+    ctx.stroke();
+    
+    drawCircle(polygon[i],colour,lineWidth+5)
   }
   ctx.stroke();
   ctx.closePath();
+}
+
+function drawCircle(pos: Point,color="red",size=12) {
+  ctx.strokeStyle = color;
+  ctx.beginPath();
+  ctx.arc(pos.x,pos.y,size,0,Math.PI *2);
+  ctx.stroke();
 }
 
 function drawDraggablePolygon() {
@@ -112,13 +127,6 @@ function drawDraggablePolygon() {
   ctx.lineWidth = 2;
   ctx.strokeStyle = "blue";
   
-  function drawCircle(pos: Point,color="red",size=12){
-    ctx.strokeStyle = color;
-    ctx.beginPath();
-    ctx.arc(pos.x,pos.y,size,0,Math.PI *2);
-    ctx.stroke();
-  }
-  
   var activePoint: (Point | undefined),cursor: string;
   var dragging= false;
 
@@ -126,7 +134,7 @@ function drawDraggablePolygon() {
     if (mouse.update) {
       cursor = "crosshair";
       ctx.clearRect(0,0,canvas.width,canvas.height);
-      drawPixel(pixel);
+      drawPolygon(pixel);
 
       if (!dragging) {  activePoint = polygon.closest(mouse) }
       if (activePoint === undefined && mouse.button) {
@@ -146,6 +154,12 @@ function drawDraggablePolygon() {
           cursor = "move";
       }
 
+      //temp
+      const intersectionPolys = getPolygonsIntersection(polygon.points, pixel); 
+      for (let i=0; i<intersectionPolys.length; i++) {
+        drawPolygon(intersectionPolys[i], "green", 3);
+      }
+
       mouse.lx = mouse.x;
       mouse.ly = mouse.y;
       canvas.style.cursor = cursor;
@@ -155,16 +169,19 @@ function drawDraggablePolygon() {
         const area = calculateArea(polygon.points);
         const pixelArea = calculateArea(pixel);
 
+        const intersectionArea = sum(intersectionPolys.map(p => calculateArea(p)));
+
+
         ctx.fillStyle = "#303030";
         ctx.font = "16px inter";
 
         ctx.fillText(`Pixel's Area: 1.00`, 10, 25);
 
         ctx.fillStyle = "blue";
-        ctx.fillText(`Polygon's Area: ${(area / pixelArea)}`, 10, 50);
+        ctx.fillText(`Polygon's Area: ${(Math.abs(area / pixelArea))}`, 10, 50);
 
-        ctx.fillStyle = "#303030";
-        ctx.fillText(`Overlap Area: ??`, 10, 75);
+        ctx.fillStyle = "green";
+        ctx.fillText(`Overlap Area: ${Math.abs(intersectionArea / pixelArea)}`, 10, 75);
       }
     }
     requestAnimationFrame(update)

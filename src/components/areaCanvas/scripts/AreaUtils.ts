@@ -1,5 +1,6 @@
 import { Point } from "../AreaCanvas"
 
+// polygon area calculation https://mathworld.wolfram.com/PolygonArea.html
 export const calculateArea = (polygon: Point[]) => {
   const pointsCount = polygon.length;
   if (pointsCount < 3) return 0;
@@ -14,5 +15,5 @@ export const calculateArea = (polygon: Point[]) => {
     area += x1*y2 - x2*y1;
   }
 
-  return Math.abs(area) / 2;
+  return area / 2;
 }

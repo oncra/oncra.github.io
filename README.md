@@ -1,7 +1,11 @@
-### Setup
+# ONCRA - Above Ground Carbon Data Tool
+
+Website is hosted at https://oncra.github.io/
+
+## Development Setup 
 First, install [node](https://nodejs.org/en) and [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
 
-Then install the relevant project dependencies 👍
+Then install the relevant project dependencies:
 ```
 npm i
 ```

@@ -3,7 +3,7 @@ import './ColourMap.css'
 import { CedaData } from "../../models/CedaData";
 import { Coordinate } from "../../models/Coordinate";
 import { availableYears } from "../../App";
-import { diff, mean, range } from "../../scripts/MathUtils";
+import { diff, mean, range } from "../../scripts/math/MathUtils";
 import { XY } from "../../models/XY";
 
 interface Props {

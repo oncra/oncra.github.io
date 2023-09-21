@@ -1,6 +1,6 @@
-import { Coordinate } from "../models/Coordinate";
-import { LatLonRange } from "../models/LatLonRange";
-import { XY } from "../models/XY";
+import { Coordinate } from "../../models/Coordinate";
+import { LatLonRange } from "../../models/LatLonRange";
+import { XY } from "../../models/XY";
 import { latMean2MPerLatLon } from "./CoordinatesUtils";
 import { mean } from "./MathUtils";
 

@@ -48,11 +48,10 @@ function App() {
         height={100} 
         kmlFileName={kmlFileName}
         XY={XY}/>
-
-      <p>don't trust the values in the table below yet, still working on it 👍</p>
-
+      
       <MainTable 
         agbData={agbData} 
+        polygon={polygon}
         rowsStatus={rowsStatus} 
         selectedYear={selectedYear} 
         setSelectedYear={setSelectedYear}/>

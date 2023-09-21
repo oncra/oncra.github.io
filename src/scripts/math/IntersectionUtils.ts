@@ -1,4 +1,5 @@
-import { Point } from "../AreaCanvas"
+import { LineDirection } from "../../models/LineDirection";
+import { Point } from "../../models/Point";
 import { calculateArea } from "./AreaUtils"
 
 // Weiler-Atherton Polygon Clipping Algorithm
@@ -14,7 +15,7 @@ export const getPolygonsIntersection = (polygonA: Point[], polygonB: Point[]): P
   
   let { list: listA, listDirection: listADirection } = GetListAndDirection(polyA, polyB);
   let { list: listB, listDirection: listBDirection } = GetListAndDirection(polyB, polyA);
-  
+
   if (listA.length == polyA.length) {
     const isAInB = isPointInsidePolygon(polyA[0], polyB);
     const isBInA = isPointInsidePolygon(polyB[0], polyA);
@@ -31,12 +32,12 @@ export const getPolygonsIntersection = (polygonA: Point[], polygonB: Point[]): P
 
   for (let i=0; i<listA.length; i++) {
     
-    if (listADirection[i] == 'entering') {
+    if (listADirection[i] == LineDirection.entering) {
       if (dealtWithEntryPointsIndices.includes(i)) continue;
       dealtWithEntryPointsIndices.push(i);
       
-      let listAExitIndex = listADirection.findIndex((v, index) => index > i && v == 'leaving');
-      if (listAExitIndex == -1) listAExitIndex = listADirection.findIndex(v => v == 'leaving');
+      let listAExitIndex = listADirection.findIndex((v, index) => index > i && v == LineDirection.leaving);
+      if (listAExitIndex == -1) listAExitIndex = listADirection.findIndex(v => v == LineDirection.leaving);
       let listAEntryToExit = listA.slice(i, listAExitIndex+1);
       if (listAEntryToExit.length == 0) {
         listAEntryToExit = listA.slice(i);
@@ -49,8 +50,8 @@ export const getPolygonsIntersection = (polygonA: Point[], polygonB: Point[]): P
         const listBEntryIndex = listB.findIndex(v => v.x == polygonToInsert[polygonToInsert.length-1].x && 
           v.y == polygonToInsert[polygonToInsert.length-1].y);
 
-        let listBExitIndex = listBDirection.findIndex((v, index) => index > listBEntryIndex && v == 'leaving');
-        if (listBExitIndex == -1) listBExitIndex = listBDirection.findIndex(v => v == 'leaving');
+        let listBExitIndex = listBDirection.findIndex((v, index) => index > listBEntryIndex && v == LineDirection.leaving);
+        if (listBExitIndex == -1) listBExitIndex = listBDirection.findIndex(v => v == LineDirection.leaving);
         let listBEntryToExit = listB.slice(listBEntryIndex, listBExitIndex+1);
         if (listBEntryToExit.length == 0) {
           listBEntryToExit = listB.slice(listBEntryIndex);
@@ -70,8 +71,8 @@ export const getPolygonsIntersection = (polygonA: Point[], polygonB: Point[]): P
 
         dealtWithEntryPointsIndices.push(listAEntryIndex);
 
-        let listAExitIndex = listADirection.findIndex((v, index) => index > listAEntryIndex && v == 'leaving');
-        if (listAExitIndex == -1) listAExitIndex = listADirection.findIndex(v => v == 'leaving');
+        let listAExitIndex = listADirection.findIndex((v, index) => index > listAEntryIndex && v == LineDirection.leaving);
+        if (listAExitIndex == -1) listAExitIndex = listADirection.findIndex(v => v == LineDirection.leaving);
         let listAEntryToExit = listA.slice(listAEntryIndex, listAExitIndex+1);
         if (listAEntryToExit.length == 0) {
           listAEntryToExit = listA.slice(listAEntryIndex);
@@ -87,7 +88,9 @@ export const getPolygonsIntersection = (polygonA: Point[], polygonB: Point[]): P
         }
 
         count++;
-        if (count >= 10) break;
+        if (count >= 10) {
+          break;
+        }
       }
       polygonToInsert = [];
     }
@@ -136,11 +139,13 @@ const getLinesIntersection = (A: Point, B: Point, C: Point, D: Point): Point | n
   const x = (b2*c1 - b1*c2) / determinant;
   const y = (a1*c2 - a2*c1) / determinant;
 
-  if (x < Math.min(A.x, B.x) || x > Math.max(A.x, B.x)) return null;
-  if (y < Math.min(A.y, B.y) || y > Math.max(A.y, B.y)) return null;
+  const smallGap = 0.00000001;  
 
-  if (x < Math.min(C.x, D.x) || x > Math.max(C.x, D.x)) return null;
-  if (y < Math.min(C.y, D.y) || y > Math.max(C.y, D.y)) return null;
+  if (x < Math.min(A.x, B.x) - smallGap || x > Math.max(A.x, B.x) + smallGap) return null;
+  if (y < Math.min(A.y, B.y) - smallGap || y > Math.max(A.y, B.y) + smallGap) return null;
+
+  if (x < Math.min(C.x, D.x) - smallGap || x > Math.max(C.x, D.x) + smallGap) return null;
+  if (y < Math.min(C.y, D.y) - smallGap || y > Math.max(C.y, D.y) + smallGap) return null;
 
   return {x: x, y: y};
 }
@@ -175,23 +180,23 @@ const isPointInsidePolygon = (point: Point, polygon: Point[]) => {
 
 function GetListAndDirection(polyA: Point[], polyB: Point[]) {
   let list: Point[] = [];
-  let listDirection: ('entering' | 'leaving' | 'notIntersection')[] = [];
+  let listDirection: LineDirection[] = [];
   for (let i = 0; i < polyA.length; i++) {
     const pa = polyA[i];
     const pb = polyA[(i + 1) % polyA.length];
     const intersectionPoints = getPolygonLineIntersections(polyB, pa, pb);
 
     list.push(pa);
-    listDirection.push('notIntersection');
+    listDirection.push(LineDirection.notIntersection);
 
     list.push.apply(list, intersectionPoints);
 
     const isPointAIn = isPointInsidePolygon(pa, polyB);
-    const intersectionPointsDirection: ('entering' | 'leaving' | 'notIntersection')[] = intersectionPoints.map((_, index) => {
+    const intersectionPointsDirection: LineDirection[] = intersectionPoints.map((_, index) => {
       if (isPointAIn) {
-        return index % 2 == 1 ? 'entering' : 'leaving';
-      } 
-      return index % 2 == 0 ? 'entering' : 'leaving';
+        return index % 2 == 1 ? LineDirection.entering : LineDirection.leaving;
+      }
+      return index % 2 == 0 ? LineDirection.entering : LineDirection.leaving;
     });
     listDirection.push.apply(listDirection, intersectionPointsDirection);
   }

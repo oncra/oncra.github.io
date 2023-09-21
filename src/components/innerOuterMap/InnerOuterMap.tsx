@@ -1,8 +1,8 @@
 import { useEffect, useRef } from "react";
 import { XY } from "../../models/XY";
 import { Coordinate } from "../../models/Coordinate";
-import { getGridCrossDataMatrixFromAGBPolygon } from "../../scripts/RayCastingUtils";
-import { diff, mean, range } from "../../scripts/MathUtils";
+import { getGridCrossDataMatrixFromAGBPolygon } from "../../scripts/math/RayCastingUtils";
+import { diff, mean, range } from "../../scripts/math/MathUtils";
 
 interface Props {
   width: number,

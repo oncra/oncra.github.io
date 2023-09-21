@@ -1,4 +1,4 @@
-import { Point } from "../AreaCanvas"
+import { Point } from "../../models/Point";
 
 // polygon area calculation https://mathworld.wolfram.com/PolygonArea.html
 export const calculateArea = (polygon: Point[]) => {

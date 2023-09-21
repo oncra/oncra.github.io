@@ -1,8 +1,9 @@
 import { useEffect, useRef } from 'react';
 import './AreaCanvas.css'
-import { calculateArea } from './scripts/AreaUtils';
-import { getPolygonsIntersection } from './scripts/IntersectionUtils';
-import { sum } from '../../scripts/MathUtils';
+import { calculateArea } from '../../scripts/math/AreaUtils';
+import { getPolygonsIntersection } from '../../scripts/math/IntersectionUtils';
+import { sum } from '../../scripts/math/MathUtils';
+import { Point } from '../../models/Point';
 
 let canvas: HTMLCanvasElement;
 let ctx: CanvasRenderingContext2D;
@@ -10,11 +11,6 @@ let ctx: CanvasRenderingContext2D;
 const squareLength = 200;
 const width = 600;
 const height = 600;
-
-export interface Point {
-  x: number,
-  y: number
-}
 
 const point = (x: number,y: number) : Point => ({x,y});
 
@@ -83,7 +79,6 @@ export default AreaCanvas
 
 function drawPolygon(polygon: Point[], colour: string = "#000", lineWidth: number = 1) {
   if (polygon == undefined) return;
-  
 
   ctx.strokeStyle = colour;
   ctx.lineWidth = lineWidth;
@@ -154,7 +149,6 @@ function drawDraggablePolygon() {
           cursor = "move";
       }
 
-      //temp
       const intersectionPolys = getPolygonsIntersection(polygon.points, pixel); 
       for (let i=0; i<intersectionPolys.length; i++) {
         drawPolygon(intersectionPolys[i], "green", 3);
@@ -170,7 +164,6 @@ function drawDraggablePolygon() {
         const pixelArea = calculateArea(pixel);
 
         const intersectionArea = sum(intersectionPolys.map(p => calculateArea(p)));
-
 
         ctx.fillStyle = "#303030";
         ctx.font = "16px inter";

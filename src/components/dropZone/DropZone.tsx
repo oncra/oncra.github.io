@@ -3,7 +3,7 @@ import './DropZone.css'
 import FileSelector from '../fileSelector/FileSelector';
 import { parseKMLFile } from '../../scripts/KMLReader';
 import ReactDOM from 'react-dom';
-import { polygon2LatLonRange, polygon2XY } from '../../scripts/PolygonUtils';
+import { polygon2LatLonRange, polygon2XY } from '../../scripts/math/PolygonUtils';
 import { callCedaEndpoint } from '../../scripts/CEDA/CedaHttpClient';
 import { parseCedaResponse } from '../../scripts/CEDA/CedaResponseParser';
 import { availableYears } from '../../App';

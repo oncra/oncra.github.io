@@ -1,6 +1,6 @@
-import { Coordinate } from "../models/Coordinate";
-import { GridData } from "../models/GridData";
-import { clientParams, lat2Index, lon2Index } from "./CEDA/CedaHttpClient";
+import { Coordinate } from "../../models/Coordinate";
+import { GridData } from "../../models/GridData";
+import { clientParams, lat2Index, lon2Index } from "../CEDA/CedaHttpClient";
 import { makeArray } from "./MathUtils";
 import { polygon2LatLonRange } from "./PolygonUtils";
 

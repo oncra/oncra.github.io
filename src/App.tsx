@@ -29,8 +29,6 @@ function App() {
   return (
     <div className='mainContainer'>
       <Header />
-
-      <AreaCanvas />
       
       <h1>Above Ground Carbon <br />Data Tool</h1>
       <Instruction />
@@ -69,6 +67,8 @@ function App() {
         height={600} 
         polygon={polygon}
         XY={XY}/>
+
+      <AreaCanvas />
     </div>
   )
 }

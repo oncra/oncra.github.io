@@ -62,5 +62,9 @@ export const GetGridMultiplier = (
       }
     }
   }
+  if (gridMultiplier.length == 1 && gridMultiplier[0].length == 1) {
+    gridMultiplier[0][0] = 1;
+  }
+
   return { polygonXY, gridMultiplier };
 }

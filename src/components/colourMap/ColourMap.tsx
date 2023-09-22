@@ -3,8 +3,9 @@ import './ColourMap.css'
 import { CedaData } from "../../models/CedaData";
 import { Coordinate } from "../../models/Coordinate";
 import { availableYears } from "../../App";
-import { diff, mean, range } from "../../scripts/math/MathUtils";
+import { range } from "../../scripts/math/MathUtils";
 import { XY } from "../../models/XY";
+import { clientParams } from "../../scripts/CEDA/CedaHttpClient";
 
 interface Props {
   width: number,
@@ -28,19 +29,22 @@ const drawColourMap = (cedaData: CedaData, XY: XY, agbMax: number) => {
   const width = canvas.width;
   const height = canvas.height;
 
-  const gridLatRange = range(cedaData.lat) + Math.abs(mean(diff(cedaData.lat)));
-  const gridLonRange = range(cedaData.lon) + Math.abs(mean(diff(cedaData.lon)));
+  let gridXUnit = Math.abs(clientParams.lon1 - clientParams.lon0) / clientParams.lonCount;
+  let gridYUnit = Math.abs(clientParams.lat1 - clientParams.lat0) / clientParams.latCount;
+
+  const gridLatRange = range(cedaData.lat) + gridYUnit;
+  const gridLonRange = range(cedaData.lon) + gridXUnit;
   const scaling = Math.min(width / (gridLonRange * XY.mPerLon), 
     (height - bottomPadding) / (gridLatRange * XY.mPerLat));
 
   let gridX = cedaData.lon.map(lon => (lon - XY.lonMean) * XY.mPerLon * scaling);
   let gridY = cedaData.lat.map(lat => (lat - XY.latMean) * XY.mPerLat * scaling);
 
-  const gridXUnit = mean(diff(gridX));
-  const gridYUnit = mean(diff(gridY));
+  gridXUnit = gridXUnit * XY.mPerLon * scaling;
+  gridYUnit = gridYUnit * XY.mPerLat * scaling;
 
   const shiftGridX = -Math.min(...gridX) + gridXUnit / 2;
-  const shiftGridY = Math.max(...gridY) - gridYUnit / 2;
+  const shiftGridY = Math.max(...gridY) + gridYUnit / 2;
 
   const centreShift = (width - range(gridX) - gridXUnit) / 2;
   gridX = gridX.map(x => x + shiftGridX + centreShift);
@@ -58,7 +62,6 @@ const drawColourMap = (cedaData: CedaData, XY: XY, agbMax: number) => {
     
     for (let j=0; j<data[i].length; j++) {
       const x = gridX[j] - gridXUnit / 2;
-      
       const value = data[i][j]! / agbMax;
       const r = Math.round(color1[0] * value + color0[0] * (1 - value));
       const g = Math.round(color1[1] * value + color0[1] * (1 - value));
@@ -75,7 +78,7 @@ const drawColourMap = (cedaData: CedaData, XY: XY, agbMax: number) => {
 }
 
 function drawColourBarOnColourMap(gridY: number[], gridYUnit: number, width: number, color1: number[], color0: number[], colorBarHeight: number, agbMax: number) {
-  let y = Math.max(...gridY) - gridYUnit/2 + 10;
+  let y = Math.max(...gridY) + gridYUnit/2 + 10;
   for (let i = 0; i < width; i++) {
     const value = i / width;
 

@@ -45,7 +45,8 @@ export const getPolygonsIntersection = (polygonA: Point[], polygonB: Point[]): P
       }
       polygonToInsert = listAEntryToExit.slice();
       
-      let count = 0;
+      let loopCount = 0;
+      const reasonableLoopLimit = 20;
       while (true) {
         const listBEntryIndex = listB.findIndex(v => v.x == polygonToInsert[polygonToInsert.length-1].x && 
           v.y == polygonToInsert[polygonToInsert.length-1].y);
@@ -87,8 +88,8 @@ export const getPolygonsIntersection = (polygonA: Point[], polygonB: Point[]): P
             break;
         }
 
-        count++;
-        if (count >= 10) {
+        loopCount++;
+        if (loopCount >= reasonableLoopLimit) {
           break;
         }
       }

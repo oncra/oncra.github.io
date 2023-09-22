@@ -12,7 +12,6 @@ import { XY } from './models/XY';
 import KMLFilePreviewer from './components/kmlFilePreviewer/KMLFilePreviewer';
 import { RowStatus } from './models/RowStatus';
 import InnerOuterMap from './components/innerOuterMap/InnerOuterMap';
-import AreaCanvas from './components/areaCanvas/AreaCanvas';
 
 preventDefaultDragDropBehaviour();
 
@@ -67,8 +66,6 @@ function App() {
         height={600} 
         polygon={polygon}
         XY={XY}/>
-
-      <AreaCanvas />
     </div>
   )
 }

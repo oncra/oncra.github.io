@@ -18,12 +18,15 @@ const drawInnerOuterMap = (polygon: Coordinate[], XY: XY) => {
   const width = canvas.width;
   const height = canvas.height;
 
+  const bottomPadding = 120;
+
   const {gridCrossDataMatrix, xGrids, yGrids} = getGridCrossDataMatrixFromAGBPolygon(polygon);
 
   const xGridsRange = range(xGrids);
   const yGridsRange = range(yGrids);
   
-  const scaling = Math.min(width / (xGridsRange * XY.mPerLon) , height / (yGridsRange * XY.mPerLat));
+  const scaling = Math.min(width / (xGridsRange * XY.mPerLon), 
+    (height - bottomPadding) / (yGridsRange * XY.mPerLat));
 
   let gridX = xGrids.map(lon => (lon - XY.lonMean) * XY.mPerLon * scaling);
   let gridY = yGrids.map(lat => (lat - XY.latMean) * XY.mPerLat * scaling);
@@ -69,6 +72,39 @@ const drawInnerOuterMap = (polygon: Coordinate[], XY: XY) => {
   }
   ctx.stroke();
   ctx.closePath();
+
+  let y = Math.max(...gridY) + gridYUnit/2 + 10;
+  
+  let colourGridSize = 12;
+  let x = gridX[gridX.length-1] - colourGridSize;
+  let textPadding = 5;
+
+  y += 10;
+  ctx.fillStyle = "#303030";
+  ctx.font = "16px inter";
+
+  let textString = `Fully Inside`;
+  let textWidth = ctx.measureText(textString).width;
+  ctx.fillText(textString, x - textWidth - textPadding, y);
+  ctx.fillStyle = "green";
+  ctx.fillRect(x, y-colourGridSize, colourGridSize, colourGridSize);
+  ctx.fillStyle = "#303030";
+
+  y += 20;
+  textString = `Partial`;
+  textWidth = ctx.measureText(textString).width;
+  ctx.fillText(textString, x - textWidth - textPadding, y);
+  ctx.fillStyle = "orange";
+  ctx.fillRect(x, y-colourGridSize, colourGridSize, colourGridSize);
+  ctx.fillStyle = "#303030";
+
+  y += 20;
+  textString = `Fully Outside`;
+  textWidth = ctx.measureText(textString).width;
+  ctx.fillText(textString, x - textWidth - textPadding, y);
+  ctx.fillStyle = "red";
+  ctx.fillRect(x, y-colourGridSize, colourGridSize, colourGridSize);
+  ctx.fillStyle = "#303030";
 }
 
 const InnerOuterMap = ({width, height, polygon, XY}: Props) => {

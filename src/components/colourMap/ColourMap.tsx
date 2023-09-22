@@ -6,6 +6,7 @@ import { availableYears } from "../../App";
 import { range } from "../../scripts/math/MathUtils";
 import { XY } from "../../models/XY";
 import { clientParams } from "../../scripts/CEDA/CedaHttpClient";
+import { getCO2, getCarbon } from "../mainTable/MainTable";
 
 interface Props {
   width: number,
@@ -72,15 +73,17 @@ const drawColourMap = (cedaData: CedaData, XY: XY, agbMax: number) => {
     }
   }
 
-  drawColourBarOnColourMap(gridY, gridYUnit, width, color1, color0, colorBarHeight, agbMax);
+  drawColourBarOnColourMap(gridX, gridXUnit, gridY, gridYUnit, color1, color0, colorBarHeight, agbMax);
 
   drawPolygonOnColourMap(polygonX, polygonY);
 }
 
-function drawColourBarOnColourMap(gridY: number[], gridYUnit: number, width: number, color1: number[], color0: number[], colorBarHeight: number, agbMax: number) {
+function drawColourBarOnColourMap(gridX: number[], gridXUnit: number, gridY: number[], gridYUnit: number, color1: number[], color0: number[], colorBarHeight: number, agbMax: number) {
+  let x0 = gridX[0] - gridXUnit / 2;
+  let x1 = gridX[gridX.length-1] + gridXUnit/2;
   let y = Math.max(...gridY) + gridYUnit/2 + 10;
-  for (let i = 0; i < width; i++) {
-    const value = i / width;
+  for (let i = x0; i < x1; i++) {
+    const value = i / (x1 - x0);
 
     const r = Math.round(color1[0] * value + color0[0] * (1 - value));
     const g = Math.round(color1[1] * value + color0[1] * (1 - value));
@@ -94,21 +97,21 @@ function drawColourBarOnColourMap(gridY: number[], gridYUnit: number, width: num
   ctx.fillStyle = "#303030";
   ctx.font = "16px inter";
   
-  ctx.fillText("0", 0, y);
+  ctx.fillText("0", x0, y);
 
   let textString = `AGB ${agbMax}`;
   let textWidth = ctx.measureText(textString).width;
-  ctx.fillText(textString, width - textWidth, y);
+  ctx.fillText(textString, x1 - textWidth, y);
 
   y += 20;
-  textString = `Carbon ${(agbMax)}`;
+  textString = `Carbon ${(getCarbon(agbMax)?.toFixed(3))}`;
   textWidth = ctx.measureText(textString).width;
-  ctx.fillText(textString, width - textWidth, y);
+  ctx.fillText(textString, x1 - textWidth, y);
 
   y += 20;
-  textString = `CO2 Equivalent ${(agbMax)}`;
+  textString = `CO2 Equivalent ${(getCO2(agbMax)?.toFixed(3))}`;
   textWidth = ctx.measureText(textString).width;
-  ctx.fillText(textString, width - textWidth, y);
+  ctx.fillText(textString, x1 - textWidth, y);
 }
 
 function drawPolygonOnColourMap(polygonX: number[], polygonY: number[]) {

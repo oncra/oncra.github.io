@@ -18,8 +18,8 @@ interface Props {
   setSelectedYear: Dispatch<SetStateAction<number | null>>,
 }
 
-const getCarbon = (agb: number | null | undefined) => agb !== null && agb !== undefined ? agb / 2 : null;
-const getCO2 = (agb: number | null | undefined) => agb !== null && agb !== undefined ? agb / 2 * 44 / 12 : null;
+export const getCarbon = (agb: number | null | undefined) => agb !== null && agb !== undefined ? agb / 2 : null;
+export const getCO2 = (agb: number | null | undefined) => agb !== null && agb !== undefined ? agb / 2 * 44 / 12 : null;
 
 const MainTable = ({agbData, polygon, rowsStatus, selectedYear, setSelectedYear}: Props) => {
   const {gridCrossDataMatrix, xGrids, yGrids} = getGridCrossDataMatrixFromAGBPolygon(polygon);

@@ -12,6 +12,7 @@ import { XY } from './models/XY';
 import KMLFilePreviewer from './components/kmlFilePreviewer/KMLFilePreviewer';
 import { RowStatus } from './models/RowStatus';
 import InnerOuterMap from './components/innerOuterMap/InnerOuterMap';
+import DataAttribution from './components/dataAttribution/DataAttribution';
 
 preventDefaultDragDropBehaviour();
 
@@ -26,47 +27,54 @@ function App() {
   const [kmlFileName, setKmlFileName] = useState<string | null>(null);
   
   return (
-    <div className='mainContainer'>
-      <Header />
-      
-      <h1>Above Ground Carbon <br />Data Tool</h1>
+    <>
+      <div className='mainContainer'>
+        <Header />
+        
+        <h1>Above Ground Carbon <br />Data Tool</h1>
+        <DataAttribution />
+      </div>
+
       <Instruction />
 
-      <DropZone 
-        setAgbData={setAgbData} 
-        setPolygon={setPolygon} 
-        setXY={setXY} 
-        setRowsStatus={setRowsStatus} 
-        setSelectedYear={setSelectedYear}
-        setKmlFileName={setKmlFileName}/>
+      <div className='mainContainer'>
 
-      <KMLFilePreviewer 
-        width={600} 
-        height={100} 
-        kmlFileName={kmlFileName}
-        XY={XY}/>
-      
-      <MainTable 
-        agbData={agbData} 
-        polygon={polygon}
-        rowsStatus={rowsStatus} 
-        selectedYear={selectedYear} 
-        setSelectedYear={setSelectedYear}/>
+        <DropZone 
+          setAgbData={setAgbData} 
+          setPolygon={setPolygon} 
+          setXY={setXY} 
+          setRowsStatus={setRowsStatus} 
+          setSelectedYear={setSelectedYear}
+          setKmlFileName={setKmlFileName}/>
 
-      <ColourMap 
-        width={600} 
-        height={600} 
-        selectedYear={selectedYear} 
-        agbData={agbData} 
-        polygon={polygon}
-        XY={XY}/>
+        <KMLFilePreviewer 
+          width={600} 
+          height={100} 
+          kmlFileName={kmlFileName}
+          XY={XY}/>
+        
+        <MainTable 
+          agbData={agbData} 
+          polygon={polygon}
+          rowsStatus={rowsStatus} 
+          selectedYear={selectedYear} 
+          setSelectedYear={setSelectedYear}/>
 
-      <InnerOuterMap 
-        width={600} 
-        height={600} 
-        polygon={polygon}
-        XY={XY}/>
-    </div>
+        <ColourMap 
+          width={600} 
+          height={600} 
+          selectedYear={selectedYear} 
+          agbData={agbData} 
+          polygon={polygon}
+          XY={XY}/>
+
+        <InnerOuterMap 
+          width={600} 
+          height={600} 
+          polygon={polygon}
+          XY={XY}/>
+      </div>
+    </>
   )
 }
 

@@ -83,7 +83,7 @@ function drawColourBarOnColourMap(gridX: number[], gridXUnit: number, gridY: num
   let x1 = gridX[gridX.length-1] + gridXUnit/2;
   let y = Math.max(...gridY) + gridYUnit/2 + 10;
   for (let i = x0; i < x1; i++) {
-    const value = i / (x1 - x0);
+    const value = (i - x0) / (x1 - x0);
 
     const r = Math.round(color1[0] * value + color0[0] * (1 - value));
     const g = Math.round(color1[1] * value + color0[1] * (1 - value));

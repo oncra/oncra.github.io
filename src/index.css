@@ -9,4 +9,9 @@ body {
 
 a {
   text-decoration: none;
+  color: rgb(28, 119, 255);
+}
+
+a:hover {
+  color: rgb(133, 182, 255);
 }

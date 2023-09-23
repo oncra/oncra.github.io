@@ -1,6 +1,9 @@
 .instruction {
-  font-size: 20px;
-  margin-top: 50px;
+  font-size: 16px;
+  background: #f3f3f3;
+  padding: 10px 0 40px 0;
+  margin: 50px 0;
+  color: #000;
 }
 
 .smallGrayButton {
@@ -15,6 +18,7 @@
 
 .smallGrayButton:hover {
   background-color: #556069;
+  color: #FFF;
 }
 
 #exampleKMLFile {
@@ -22,5 +26,9 @@
 }
 
 .instruction div {
-  margin-bottom: 50px;
+  margin-bottom: 30px;
+}
+
+.instruction div:last-of-type {
+  margin-bottom: 0;
 }

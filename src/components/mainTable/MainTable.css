@@ -36,3 +36,12 @@
 .tableContainer td {
   cursor: pointer;
 }
+
+.tableContainer table tr#no-hover td {
+  cursor: default;
+  border-top: 2px solid #616161;
+}
+
+.tableContainer table tr#no-hover:hover {
+  background-color: inherit;
+}

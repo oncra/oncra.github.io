@@ -37,7 +37,9 @@ const MainTable = ({agbData, polygon, rowsStatus, selectedYear, setSelectedYear}
     polygonXYArea = Math.abs(polygonXYArea);
   }
 
-  const tableRows = availableYears.map((year, index) => {
+  let agbSum: number | null = null;
+  let agbCount = 0;
+  let tableRows = availableYears.map((year, index) => {
     const agbDatum = agbData[index];
     const rowStatus = rowsStatus[index];
 
@@ -82,6 +84,9 @@ const MainTable = ({agbData, polygon, rowsStatus, selectedYear, setSelectedYear}
 
       carbon = getCarbon(agb);
       co2 = getCO2(agb);
+
+      agbSum = agbSum == null ? agb : agbSum + agb;
+      agbCount++;
     }
 
     return (
@@ -92,7 +97,25 @@ const MainTable = ({agbData, polygon, rowsStatus, selectedYear, setSelectedYear}
         <td>{co2?.toFixed(3)}</td>
       </tr>
     );
-  })
+  });
+
+  let agbAvg: number | null = null;
+  let carbonAvg: number | null = null;
+  let co2Avg: number | null = null;
+
+  if (agbSum !== null) {
+    agbAvg = agbSum/agbCount;
+    carbonAvg = getCarbon(agbAvg);
+    co2Avg = getCO2(agbAvg);
+  }
+  tableRows.push((
+    <tr key="average" id="no-hover">
+      <td>Average</td>
+      <td>{agbAvg?.toFixed(3)}</td>
+      <td>{carbonAvg?.toFixed(3)}</td>
+      <td>{co2Avg?.toFixed(3)}</td>
+    </tr>
+  ));
   
   return (
     <div className='tableContainer'>

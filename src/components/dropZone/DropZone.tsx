@@ -1,4 +1,4 @@
-import { Dispatch, DragEvent, SetStateAction, useRef } from 'react';
+import { Dispatch, DragEvent, SetStateAction, useRef, useState } from 'react';
 import './DropZone.css'
 import FileSelector from '../fileSelector/FileSelector';
 import { parseKMLFile } from '../../scripts/KMLReader';
@@ -23,28 +23,25 @@ interface Props {
 
 const DropZone = ({setAgbData, setPolygon, setXY, setRowsStatus, setSelectedYear, setKmlFileName}: Props) => {
   const dropZoneRef = useRef<HTMLDivElement>(null);
-  const fileErrorRef = useRef<HTMLDivElement>(null);
-
+  const [fileError, setFileError] = useState<string>('');
+  
   const handleDrop = async (event: DragEvent<HTMLDivElement>): Promise<void> => {
     restoreDropZone();
-    const fileError = fileErrorRef.current;
-    if (fileError == null) return;
-    
     const items = event.dataTransfer.items;
     if (items.length > 1) {
-      fileError.innerText = 'Can only upload one file';
+      setFileError('Can only upload one file');
       return;
     }
 
     const item = items[0];
     if (item.kind !== "file" || !item.type.includes('kml')) {
-      fileError.innerText = 'File format must be .kml';
+      setFileError('File format must be .kml');
       return;
     }
 
     const file = item.getAsFile();
     if (file == null) {
-      fileError.innerText = 'Unexpected error occurred while loading file';
+      setFileError('Unexpected error occurred while loading file');
       return;
     }
 
@@ -62,10 +59,7 @@ const DropZone = ({setAgbData, setPolygon, setXY, setRowsStatus, setSelectedYear
   const restoreDropZone = () => dropZoneRef.current?.classList.remove('active');
 
   const loadFileAndCallEndpoint = async (file: File) => {
-    const fileError = fileErrorRef.current;
-    if (fileError == null) return;
-
-    fileError.innerText = '';
+    setFileError('');
     if (file == undefined) return;
     setKmlFileName(file.name);
 
@@ -76,7 +70,7 @@ const DropZone = ({setAgbData, setPolygon, setXY, setRowsStatus, setSelectedYear
     const xRange = range(XY.x);
     const yRange = range(XY.y);
     if (xRange > maxRectangleMetres || yRange > maxRectangleMetres) {
-      fileError.innerText = `.kml file polygon region (${(xRange/1000).toFixed(2)}km x ${(yRange/1000).toFixed(2)}km) exceeds threshold (10km x 10km)`;
+      setFileError(`.kml file polygon region (${(xRange/1000).toFixed(2)}km x ${(yRange/1000).toFixed(2)}km) exceeds threshold (10km x 10km)`);
       return;
     }
 
@@ -138,7 +132,7 @@ const DropZone = ({setAgbData, setPolygon, setXY, setRowsStatus, setSelectedYear
           />
         </div>
       </div>
-      <div ref={fileErrorRef} className='fileError'></div>
+      <div className='fileError'>{fileError}</div>
     </>
   )
 }

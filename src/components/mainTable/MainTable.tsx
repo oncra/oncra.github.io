@@ -26,14 +26,10 @@ const MainTable = ({agbData, polygon, rowsStatus, selectedYear, setSelectedYear}
 
   let { polygonXY, gridMultiplier } = GetGridMultiplier(gridCrossDataMatrix, xGrids, yGrids, polygon);
 
-  let polygonXYArea: number | undefined;
+  let polygonXYArea: number;
   if (polygonXY !== undefined) {
     polygonXYArea = calculateArea(polygonXY);
-    const hasAtLeastOneFullGridInside = Math.max(...gridMultiplier.flat(2)) >= 1;
-    if (hasAtLeastOneFullGridInside) {
-      gridMultiplier = gridMultiplier.map(line => line.map(v => Math.floor(v)));
-      polygonXYArea = sum(gridMultiplier.flat(2));
-    }
+    ({ gridMultiplier, polygonXYArea } = OnlyCountFullGridIfHasAtLeastOneFullGridInside(gridMultiplier, polygonXYArea));
     polygonXYArea = Math.abs(polygonXYArea);
   }
 
@@ -42,29 +38,12 @@ const MainTable = ({agbData, polygon, rowsStatus, selectedYear, setSelectedYear}
   let tableRows = availableYears.map((year, index) => {
     const agbDatum = agbData[index];
     const rowStatus = rowsStatus[index];
-
-    let statusIcon = <></>;
-    if (rowStatus==RowStatus.Fetching) {
-      statusIcon = (<LoadingSpinner />);
-    }
-    if (rowStatus==RowStatus.Done) {
-      statusIcon = (<>✅</>);
-    }
-    if (rowStatus==RowStatus.Failed) {
-      statusIcon = (<>❌</>)
-    }
+    let statusIcon = getStatusIcon(rowStatus);
     
     const handleClick = () => {
       if (rowStatus==RowStatus.Done) {
-        setSelectedYear(year)
-
-        console.log('-------------------');
-        console.log(`Year Selected: ${year}`);
-        console.log("AGB Data:");
-        console.log(agbData[availableYears.indexOf(year)]?.agb);
-        console.log('Multiplication Factors:');
-        console.log(gridMultiplier);
-        console.log(`Over Area: ${polygonXYArea}`);
+        setSelectedYear(year);
+        logSelectedYearData(year, agbData, gridMultiplier, polygonXYArea);
       }
     };
     const isSelectedYear = selectedYear == year;
@@ -74,14 +53,7 @@ const MainTable = ({agbData, polygon, rowsStatus, selectedYear, setSelectedYear}
     let carbon: number | null = null;
     let co2: number | null = null;
     if (agbDatum !== null && polygonXYArea !== undefined) {
-      agb = 0;
-      for (let i=0; i<agbDatum.agb.length; i++) {
-        for (let j=0; j<agbDatum.agb[0].length; j++) {
-          agb += (agbDatum.agb[i][j] ?? 0) * gridMultiplier[i][j];
-        }
-      }
-      agb = agb / polygonXYArea;
-
+      agb = getAGB(agb, agbDatum, gridMultiplier, polygonXYArea);
       carbon = getCarbon(agb);
       co2 = getCO2(agb);
 
@@ -135,3 +107,47 @@ const MainTable = ({agbData, polygon, rowsStatus, selectedYear, setSelectedYear}
 }
 
 export default MainTable
+
+function logSelectedYearData(year: number, agbData: (CedaData | null)[], gridMultiplier: number[][], polygonXYArea: number) {
+  console.log('-------------------');
+  console.log(`Year Selected: ${year}`);
+  console.log("AGB Data:");
+  console.log(agbData[availableYears.indexOf(year)]?.agb);
+  console.log('Multiplication Factors:');
+  console.log(gridMultiplier);
+  console.log(`Over Area: ${polygonXYArea}`);
+}
+
+function getAGB(agb: number | null, agbDatum: CedaData, gridMultiplier: number[][], polygonXYArea: number) {
+  agb = 0;
+  for (let i = 0; i < agbDatum.agb.length; i++) {
+    for (let j = 0; j < agbDatum.agb[0].length; j++) {
+      agb += (agbDatum.agb[i][j] ?? 0) * gridMultiplier[i][j];
+    }
+  }
+  agb = agb / polygonXYArea;
+  return agb;
+}
+
+function OnlyCountFullGridIfHasAtLeastOneFullGridInside(gridMultiplier: number[][], polygonXYArea: number) {
+  const hasAtLeastOneFullGridInside = Math.max(...gridMultiplier.flat(2)) >= 1;
+  if (hasAtLeastOneFullGridInside) {
+    gridMultiplier = gridMultiplier.map(line => line.map(v => Math.floor(v)));
+    polygonXYArea = sum(gridMultiplier.flat(2));
+  }
+  return { gridMultiplier, polygonXYArea };
+}
+
+function getStatusIcon(rowStatus: RowStatus) {
+  let statusIcon = <></>;
+  if (rowStatus == RowStatus.Fetching) {
+    statusIcon = (<LoadingSpinner />);
+  }
+  if (rowStatus == RowStatus.Done) {
+    statusIcon = (<>✅</>);
+  }
+  if (rowStatus == RowStatus.Failed) {
+    statusIcon = (<>❌</>);
+  }
+  return statusIcon;
+}

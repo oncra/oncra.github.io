@@ -1,9 +1,7 @@
-export interface GridData {
-  corners: corners,
-  edges: edges,
-  isPartial: boolean,
-  isFullyInside: boolean,
-  isFullyOutside: boolean
+export enum GridType {
+  isPartial,
+  isFullyInside,
+  isFullyOutside
 }
 
 export interface corners {

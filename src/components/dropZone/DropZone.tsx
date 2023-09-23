@@ -23,18 +23,32 @@ interface Props {
 
 const DropZone = ({setAgbData, setPolygon, setXY, setRowsStatus, setSelectedYear, setKmlFileName}: Props) => {
   const dropZoneRef = useRef<HTMLDivElement>(null);
+  const fileErrorRef = useRef<HTMLDivElement>(null);
 
   const handleDrop = async (event: DragEvent<HTMLDivElement>): Promise<void> => {
     restoreDropZone();
+    const fileError = fileErrorRef.current;
+    if (fileError == null) return;
+
+    fileError.innerText = '';
     
     const items = event.dataTransfer.items;
-    if (items.length > 1) return;
+    if (items.length > 1) {
+      fileError.innerText = 'Can only upload one file';
+      return;
+    }
 
     const item = items[0];
-    if (item.kind !== "file" || !item.type.includes('kml')) return;
+    if (item.kind !== "file" || !item.type.includes('kml')) {
+      fileError.innerText = 'File format must be .kml';
+      return;
+    }
 
     const file = item.getAsFile();
-    if (file == null) return;
+    if (file == null) {
+      fileError.innerText = 'Unexpected error occurred while loading file';
+      return;
+    }
 
     await loadFileAndCallEndpoint(file);
   }
@@ -99,22 +113,25 @@ const DropZone = ({setAgbData, setPolygon, setXY, setRowsStatus, setSelectedYear
   }
 
   return (
-    <div ref={dropZoneRef}
-      className='dropZone'
-      onDrop={handleDrop}
-      onDragEnter={handleDragEnter}
-      onDragLeave={handleDragLeave}
-      >
-      <div className='alignVertical'>
-        <div className='dropFileHere'>Drop .kml file here</div>
-        <div className='or'>or</div>
+    <>
+      <div ref={dropZoneRef}
+        className='dropZone'
+        onDrop={handleDrop}
+        onDragEnter={handleDragEnter}
+        onDragLeave={handleDragLeave}
+        >
+        <div className='alignVertical'>
+          <div className='dropFileHere'>Drop .kml file here</div>
+          <div className='or'>or</div>
 
-        <FileSelector 
-          acceptedFormat={'.kml'} 
-          fileLoadedCallback={loadFileAndCallEndpoint}
-        />
+          <FileSelector 
+            acceptedFormat={'.kml'} 
+            fileLoadedCallback={loadFileAndCallEndpoint}
+          />
+        </div>
       </div>
-    </div>
+      <div ref={fileErrorRef} className='fileError'></div>
+    </>
   )
 }
 

@@ -31,3 +31,8 @@
 .dropZone .or {
   margin: 15px 0;
 }
+
+.fileError {
+  color: red;
+  text-align: center;
+}

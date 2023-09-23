@@ -1,12 +1,12 @@
 import { Coordinate } from "../../../models/Coordinate";
-import { GridData } from "../../../models/GridData";
+import { GridType } from "../../../models/GridData";
 import { Point } from "../../../models/Point";
 import { calculateArea } from "../../../scripts/math/AreaUtils";
 import { getPolygonsIntersection } from "../../../scripts/math/IntersectionUtils";
 import { range } from "../../../scripts/math/MathUtils";
 
 export const GetGridMultiplier = (
-    gridCrossDataMatrix: (GridData | null)[][], 
+    gridCrossDataMatrix: (GridType | null)[][], 
     xGrids: number[], 
     yGrids: number[], 
     polygon: Coordinate[]) => {
@@ -34,15 +34,15 @@ export const GetGridMultiplier = (
   for (let i = 0; i < gridMultiplier.length; i++) {
     for (let j = 0; j < gridMultiplier[0].length; j++) {
       const gridData = gridCrossDataMatrix[i][j];
-      if (gridData == null || gridData.isFullyOutside) {
+      if (gridData == null || gridData == GridType.isFullyOutside) {
         continue;
       }
 
-      if (gridData.isFullyInside) {
+      if (gridData == GridType.isFullyInside) {
         gridMultiplier[i][j] = 1;
       }
 
-      if (gridData.isPartial) {
+      if (gridData == GridType.isPartial) {
         const gridPolygon: Point[] = [
           { x: j, y: i },
           { x: j + 1, y: i },

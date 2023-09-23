@@ -1,5 +1,5 @@
 import { Coordinate } from "../../models/Coordinate";
-import { GridData } from "../../models/GridData";
+import { GridType } from "../../models/GridData";
 import { clientParams, lat2Index, lon2Index } from "../CEDA/CedaHttpClient";
 import { makeArray } from "./MathUtils";
 import { polygon2LatLonRange } from "./PolygonUtils";
@@ -91,8 +91,13 @@ export const getVerticalCrossCountMatrix = (xGrids: number[], yGrids: number[], 
 }
 
 export const getGridCrossDataMatrix = (horizontalCrossCountMatrix: number[][], verticalCrossCountMatrix: number[][]) => {
-  const gridCrossDataMatrix: (GridData | null)[][] = horizontalCrossCountMatrix.slice(1).map(() => 
+  const gridCrossDataMatrix: (GridType | null)[][] = horizontalCrossCountMatrix.slice(1).map(() => 
     horizontalCrossCountMatrix[0].slice(1).map(() => null));
+
+  const isOnlyInOnePixel = horizontalCrossCountMatrix.length == 2 && horizontalCrossCountMatrix[0].length == 2;
+  if (isOnlyInOnePixel) {
+    return [[GridType.isPartial]];
+  }
 
   for (let i=0; i<verticalCrossCountMatrix.length-1; i++) {
     for (let j=0; j<verticalCrossCountMatrix[0].length-1; j++) {
@@ -132,17 +137,10 @@ export const getGridCrossDataMatrix = (horizontalCrossCountMatrix: number[][], v
 
       const isPartial = !(edges.top.crossCount == 0 && edges.bottom.crossCount == 0 && edges.left.crossCount == 0 && edges.right.crossCount == 0);
       const isFullyInside = !isPartial && corners.topLeft.horizontalCrossCount % 2 != 0;
-      const isFullyOutside = !isPartial && corners.topLeft.horizontalCrossCount % 2 == 0;
-
-      const gridData = {
-        corners: corners,
-        edges: edges,
-        isPartial: isPartial,
-        isFullyInside: isFullyInside,
-        isFullyOutside: isFullyOutside
-      }
-
-      gridCrossDataMatrix[i][j] = gridData;
+      
+      gridCrossDataMatrix[i][j] = isPartial ? GridType.isPartial :
+        isFullyInside ? GridType.isFullyInside :
+        GridType.isFullyOutside;
     }
   }
   return gridCrossDataMatrix;

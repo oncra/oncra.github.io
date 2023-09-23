@@ -3,6 +3,7 @@ import { XY } from "../../models/XY";
 import { Coordinate } from "../../models/Coordinate";
 import { getGridCrossDataMatrixFromAGBPolygon } from "../../scripts/math/RayCastingUtils";
 import { diff, mean, range } from "../../scripts/math/MathUtils";
+import { GridType } from "../../models/GridData";
 
 interface Props {
   width: number,
@@ -53,10 +54,10 @@ const drawInnerOuterMap = (polygon: Coordinate[], XY: XY) => {
       const x = gridX[j];
 
       const gcd = gridCrossDataMatrix[i][j];
-      if (gcd == null) ctx.fillStyle = 'black';
-      if (gcd?.isFullyInside) ctx.fillStyle = "green";
-      if (gcd?.isFullyOutside) ctx.fillStyle = "red";
-      if (gcd?.isPartial) ctx.fillStyle = "orange";
+      ctx.fillStyle = 'black';
+      if (gcd == GridType.isFullyInside) ctx.fillStyle = "green";
+      if (gcd == GridType.isFullyOutside) ctx.fillStyle = "red";
+      if (gcd == GridType.isPartial) ctx.fillStyle = "orange";
 
       ctx.fillRect(x, y, gridXUnit - 0.5, gridYUnit - 0.5);
     }
@@ -73,38 +74,7 @@ const drawInnerOuterMap = (polygon: Coordinate[], XY: XY) => {
   ctx.stroke();
   ctx.closePath();
 
-  let y = Math.max(...gridY) + gridYUnit/2 + 10;
-  
-  let colourGridSize = 12;
-  let x = gridX[gridX.length-1] - colourGridSize;
-  let textPadding = 5;
-
-  y += 10;
-  ctx.fillStyle = "#303030";
-  ctx.font = "16px inter";
-
-  let textString = `Fully Inside`;
-  let textWidth = ctx.measureText(textString).width;
-  ctx.fillText(textString, x - textWidth - textPadding, y);
-  ctx.fillStyle = "green";
-  ctx.fillRect(x, y-colourGridSize, colourGridSize, colourGridSize);
-  ctx.fillStyle = "#303030";
-
-  y += 20;
-  textString = `Partial`;
-  textWidth = ctx.measureText(textString).width;
-  ctx.fillText(textString, x - textWidth - textPadding, y);
-  ctx.fillStyle = "orange";
-  ctx.fillRect(x, y-colourGridSize, colourGridSize, colourGridSize);
-  ctx.fillStyle = "#303030";
-
-  y += 20;
-  textString = `Fully Outside`;
-  textWidth = ctx.measureText(textString).width;
-  ctx.fillText(textString, x - textWidth - textPadding, y);
-  ctx.fillStyle = "red";
-  ctx.fillRect(x, y-colourGridSize, colourGridSize, colourGridSize);
-  ctx.fillStyle = "#303030";
+  addLegend(gridY, gridX);
 }
 
 const InnerOuterMap = ({width, height, polygon, XY}: Props) => {
@@ -133,3 +103,38 @@ const InnerOuterMap = ({width, height, polygon, XY}: Props) => {
 }
 
 export default InnerOuterMap
+
+const addLegend = (gridY: number[], gridX: number[]) => {
+  let y = Math.max(...gridY) + 10;
+
+  let colourGridSize = 12;
+  let x = gridX[gridX.length - 1] - colourGridSize;
+  let textPadding = 5;
+
+  y += 10;
+  ctx.fillStyle = "#303030";
+  ctx.font = "16px inter";
+
+  let textString = `Fully Inside`;
+  let textWidth = ctx.measureText(textString).width;
+  ctx.fillText(textString, x - textWidth - textPadding, y);
+  ctx.fillStyle = "green";
+  ctx.fillRect(x, y - colourGridSize, colourGridSize, colourGridSize);
+  ctx.fillStyle = "#303030";
+
+  y += 20;
+  textString = `Partial`;
+  textWidth = ctx.measureText(textString).width;
+  ctx.fillText(textString, x - textWidth - textPadding, y);
+  ctx.fillStyle = "orange";
+  ctx.fillRect(x, y - colourGridSize, colourGridSize, colourGridSize);
+  ctx.fillStyle = "#303030";
+
+  y += 20;
+  textString = `Fully Outside`;
+  textWidth = ctx.measureText(textString).width;
+  ctx.fillText(textString, x - textWidth - textPadding, y);
+  ctx.fillStyle = "red";
+  ctx.fillRect(x, y - colourGridSize, colourGridSize, colourGridSize);
+  ctx.fillStyle = "#303030";
+}

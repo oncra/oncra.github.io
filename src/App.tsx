@@ -38,7 +38,6 @@ function App() {
       <Instruction />
 
       <div className='mainContainer'>
-
         <DropZone 
           setAgbData={setAgbData} 
           setPolygon={setPolygon} 

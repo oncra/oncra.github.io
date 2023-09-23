@@ -4,14 +4,13 @@ import FileSelector from '../fileSelector/FileSelector';
 import { parseKMLFile } from '../../scripts/KMLReader';
 import ReactDOM from 'react-dom';
 import { polygon2LatLonRange, polygon2XY } from '../../scripts/math/PolygonUtils';
-import { callCedaEndpoint } from '../../scripts/CEDA/CedaHttpClient';
-import { parseCedaResponse } from '../../scripts/CEDA/CedaResponseParser';
 import { availableYears } from '../../App';
 import { CedaData } from '../../models/CedaData';
 import { Coordinate } from '../../models/Coordinate';
 import { XY } from '../../models/XY';
 import { RowStatus } from '../../models/RowStatus';
 import { range } from '../../scripts/math/MathUtils';
+import { getCedaData } from '../../scripts/CEDA/CedaService';
 
 interface Props {
   setAgbData: Dispatch<SetStateAction<(CedaData | null)[]>>,
@@ -90,8 +89,8 @@ const DropZone = ({setAgbData, setPolygon, setXY, setRowsStatus, setSelectedYear
     setSelectedYear(null);
 
     availableYears.forEach(async (year, index) => {
-      const cedaResponse = await callCedaEndpoint(year, latLonRange);
-      if (cedaResponse == null) {
+      const cedaData = await getCedaData(year, latLonRange);
+      if (cedaData == null) {
         setRowsStatus((rowsStatus) => {
           const rowsStatusClone = [...rowsStatus];
           rowsStatusClone[index] = RowStatus.Failed;
@@ -99,8 +98,6 @@ const DropZone = ({setAgbData, setPolygon, setXY, setRowsStatus, setSelectedYear
         });
         return;
       }
-
-      const cedaData = parseCedaResponse(cedaResponse, year);
       
       setAgbData((agbData) => {
         const agbDataClone = [...agbData];

@@ -21,7 +21,3 @@ npm run dev
 npm run deploy
 ```
 so that it'll be deployed to a new branch `gh-pages`.
-
-
-### To Do List
-- Handle KML polygon longitude at around 180, due to map wrapping at lon 180 (or -180)

@@ -5,8 +5,8 @@ import { Coordinate } from "../../models/Coordinate";
 import { availableYears } from "../../App";
 import { range } from "../../scripts/math/MathUtils";
 import { XY } from "../../models/XY";
-import { clientParams } from "../../scripts/CEDA/CedaHttpClient";
 import { getCO2, getCarbon } from "../mainTable/MainTable";
+import { clientParams } from "../../scripts/CEDA/CedaService";
 
 interface Props {
   width: number,
@@ -63,7 +63,7 @@ const drawColourMap = (cedaData: CedaData, XY: XY, agbMax: number) => {
     
     for (let j=0; j<data[i].length; j++) {
       const x = gridX[j] - gridXUnit / 2;
-      const value = data[i][j]! / agbMax;
+      const value = agbMax > 0 ? data[i][j]! / agbMax : 0;
       const r = Math.round(color1[0] * value + color0[0] * (1 - value));
       const g = Math.round(color1[1] * value + color0[1] * (1 - value));
       const b = Math.round(color1[2] * value + color0[2] * (1 - value));

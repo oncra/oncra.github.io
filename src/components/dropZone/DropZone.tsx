@@ -11,6 +11,7 @@ import { CedaData } from '../../models/CedaData';
 import { Coordinate } from '../../models/Coordinate';
 import { XY } from '../../models/XY';
 import { RowStatus } from '../../models/RowStatus';
+import { range } from '../../scripts/math/MathUtils';
 
 interface Props {
   setAgbData: Dispatch<SetStateAction<(CedaData | null)[]>>,
@@ -29,8 +30,6 @@ const DropZone = ({setAgbData, setPolygon, setXY, setRowsStatus, setSelectedYear
     restoreDropZone();
     const fileError = fileErrorRef.current;
     if (fileError == null) return;
-
-    fileError.innerText = '';
     
     const items = event.dataTransfer.items;
     if (items.length > 1) {
@@ -64,13 +63,25 @@ const DropZone = ({setAgbData, setPolygon, setXY, setRowsStatus, setSelectedYear
   const restoreDropZone = () => dropZoneRef.current?.classList.remove('active');
 
   const loadFileAndCallEndpoint = async (file: File) => {
+    const fileError = fileErrorRef.current;
+    if (fileError == null) return;
+
+    fileError.innerText = '';
     if (file == undefined) return;
     setKmlFileName(file.name);
 
     const polygon = await parseKMLFile(file);
-    setPolygon(polygon);
-    
     const XY = polygon2XY(polygon);
+    
+    const maxRectangleMetres = 10000;
+    const xRange = range(XY.x);
+    const yRange = range(XY.y);
+    if (xRange > maxRectangleMetres || yRange > maxRectangleMetres) {
+      fileError.innerText = `.kml file polygon region (${(xRange/1000).toFixed(2)}km x ${(yRange/1000).toFixed(2)}km) exceeds threshold (10km x 10km)`;
+      return;
+    }
+
+    setPolygon(polygon);
     setXY(XY);
 
     const latLonRange = polygon2LatLonRange(polygon);

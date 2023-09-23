@@ -7,11 +7,12 @@ interface Props {
 }
 
 const FileSelector = ({acceptedFormat, fileLoadedCallback} : Props) => {
-  const inputFile = useRef<HTMLInputElement>(null);
+  const inputFileRef = useRef<HTMLInputElement>(null);
 
   const handleClick = () => {
-    if (inputFile.current == null) return;
-    inputFile.current.click();
+    const inputFile = inputFileRef.current;
+    if (inputFile == null) return;
+    inputFile.click();
   }
 
   const handleChange = async (e: ChangeEvent<HTMLInputElement>): Promise<void> => {
@@ -20,13 +21,17 @@ const FileSelector = ({acceptedFormat, fileLoadedCallback} : Props) => {
 
     const file = files[0];
     await fileLoadedCallback(file);
+
+    const inputFile = inputFileRef.current;
+    if (inputFile == null) return;
+    inputFile.value = '';
   }
 
   return (
     <>
       <input className="hiddenFileSelector" 
         type="file" 
-        ref={inputFile}
+        ref={inputFileRef}
         accept={acceptedFormat} 
         onChange={handleChange}/>
 

@@ -7,13 +7,14 @@
   transition: 0.2s ease;
   text-align: center;
   display: inline-block;
+  margin-bottom: 15px;
 }
 
 .dropZone.active {
   padding: 15px 30px;
   margin-left: -30px;
   margin-top: -15px;
-  margin-bottom: -15px;
+  margin-bottom: 0;
   background-color: #fffaeb;
 }
 
@@ -35,4 +36,5 @@
 .fileError {
   color: red;
   text-align: center;
+  height: 1.5em;
 }

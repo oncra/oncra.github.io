@@ -61,10 +61,10 @@ const KMLFilePreviewer = ({width, height, kmlFileName, XY}: Props) => {
   }, [XY]);
 
   return (
-    <>
+    <div id="kmlFilePreviewer">
       <div id="kmlFileName">{kmlFileName}</div>
       <canvas ref={canvasRef} width={width} height={height}></canvas>
-    </>
+    </div>
   )
 }
 

@@ -25,6 +25,5 @@ so that it'll be deployed to a new branch `gh-pages`.
 
 ### To Do List
 - Handle KML polygon longitude at around 180, due to map wrapping at lon 180 (or -180)
-- limit the KML polygon to within 1000 hectares, anything beyond that would trigger message (just like the wrong file format message)
 - add a row in table for "all time data average"
 - add short explanation and reference to the ESA dataset, see email

@@ -25,6 +25,9 @@ function App() {
   const [rowsStatus, setRowsStatus] = useState<(RowStatus)[]>(availableYears.map(() => RowStatus.Empty));
   const [selectedYear, setSelectedYear] = useState<number | null>(null);
   const [kmlFileName, setKmlFileName] = useState<string | null>(null);
+
+  const chartWidth = Math.min(600, document.body.clientWidth);
+  const chartHeight = Math.min(600, chartWidth);
   
   return (
     <>
@@ -47,7 +50,7 @@ function App() {
           setKmlFileName={setKmlFileName}/>
 
         <KMLFilePreviewer 
-          width={600} 
+          width={chartWidth} 
           height={100} 
           kmlFileName={kmlFileName}
           XY={XY}/>
@@ -60,16 +63,16 @@ function App() {
           setSelectedYear={setSelectedYear}/>
 
         <ColourMap 
-          width={600} 
-          height={600} 
+          width={chartWidth} 
+          height={chartHeight} 
           selectedYear={selectedYear} 
           agbData={agbData} 
           polygon={polygon}
           XY={XY}/>
 
         <InnerOuterMap 
-          width={600} 
-          height={600} 
+          width={chartWidth} 
+          height={chartHeight} 
           polygon={polygon}
           XY={XY}/>
       </div>

@@ -1,9 +1,14 @@
 .instruction {
-  font-size: 16px;
+  font-size: 18px;
   background: #f3f3f3;
-  padding: 10px 0 40px 0;
-  margin: 50px 0;
+  padding: 1px 0 40px 0;
+  margin: 30px 0;
   color: #000;
+}
+
+.instruction h2 {
+  text-align: left;
+  margin-bottom: 1.2em;
 }
 
 .smallGrayButton {
@@ -23,6 +28,7 @@
 
 #exampleKMLFile {
   float: right;
+  transform: translateY(-5px);
 }
 
 .instruction div {

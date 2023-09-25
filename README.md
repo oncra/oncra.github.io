@@ -6,6 +6,8 @@ based on the input of a land area in the form of a KML file.
 
 Website is hosted at https://oncra.github.io/
 
+Coded with ❤️ by [@iamfranco](https://github.com/iamfranco)
+
 ![app demo](public/oncra_app_demo.gif)
 
 ## Development Setup 

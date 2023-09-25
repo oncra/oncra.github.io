@@ -2,15 +2,12 @@ import './DataAttribution.css'
 
 const DataAttribution = () => {
   return (
-    <div id="data-attribution">
+    <div id="dataAttribution">
       <p>
-        This tool fetches above ground biomass data from the 
-        <a href="https://data.ceda.ac.uk/neodc/esacci/biomass/data/agb/maps/v4.0" target='_blank'> ESA AGB Dataset </a> 
-        based on the input of a land area in the form of a KML file. 
-      </p>
-      <p>
-        The dataset is based on Sentinel satellite data and other sources, 
-        and both the data and this set are free to use for all purposes. 
+        The <a href="https://catalogue.ceda.ac.uk/uuid/af60720c1e404a9e9d2c145d2b2ead4e" target='_blank'>ESA AGB Dataset</a> is 
+        based on Sentinel satellite data and other sources, 
+        and both the data and this set are free to use for all purposes. (
+        <a href="https://dap.ceda.ac.uk/neodc/esacci/biomass/data/agb/maps/v4.0/00README_catalogue_and_licence.txt?download=1" target='_blank'>Licence</a>)
       </p>
       <p>
         <a href="https://oncra.org" target='_blank'>ONCRA </a> 

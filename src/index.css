@@ -2,6 +2,11 @@ body {
   margin: 0;
   font-family: 'Inter', sans-serif;
   color: #303030;
+  overflow-x: hidden;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 ::selection      { background: rgba(105, 135, 153, 0.2); /* WebKit/Blink Browsers */ }

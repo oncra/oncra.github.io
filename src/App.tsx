@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import './App.css'
 import ColourMap from './components/colourMap/ColourMap';
 import DropZone from './components/dropZone/DropZone'
@@ -12,6 +12,7 @@ import { XY } from './models/XY';
 import KMLFilePreviewer from './components/kmlFilePreviewer/KMLFilePreviewer';
 import { RowStatus } from './models/RowStatus';
 import InnerOuterMap from './components/innerOuterMap/InnerOuterMap';
+import Footer from './components/footer/Footer';
 import DataAttribution from './components/dataAttribution/DataAttribution';
 
 preventDefaultDragDropBehaviour();
@@ -28,6 +29,15 @@ function App() {
 
   const chartWidth = Math.min(600, document.body.clientWidth);
   const chartHeight = Math.min(600, chartWidth);
+
+  const dataSectionRef = useRef<HTMLDivElement>(null);
+  const handleDatalinkClick = () => {
+    dataSectionRef.current?.classList.add('active');
+
+    setTimeout(function(){
+      dataSectionRef.current?.classList.remove('active');
+    }, 3000);
+  }
   
   return (
     <>
@@ -35,7 +45,13 @@ function App() {
         <Header />
         
         <h1>Above Ground Carbon <br />Data Tool</h1>
-        <DataAttribution />
+        <div>
+          <p>
+            This tool fetches above ground biomass data from the 
+            <a href="#dataSection" onClick={handleDatalinkClick}> ESA AGB Dataset </a> 
+            based on the input of a land area in the form of a KML file. 
+          </p>
+        </div>
       </div>
 
       <Instruction />
@@ -75,7 +91,14 @@ function App() {
           height={chartHeight} 
           polygon={polygon}
           XY={XY}/>
+
+        <div id="dataSection" ref={dataSectionRef}>
+          <DataAttribution />
+        </div>
+        
       </div>
+
+      <Footer />
     </>
   )
 }

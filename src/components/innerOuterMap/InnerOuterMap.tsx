@@ -95,7 +95,7 @@ const InnerOuterMap = ({width, height, polygon, XY}: Props) => {
   return (
     <>
       {(polygon.length > 0) && <div id="colourMapContainer">
-        <h2>Inner Outer Polygon Map</h2>
+        <h2>Data Grid Polygon Map</h2>
         <canvas ref={canvasRef} width={width} height={height}></canvas>
       </div>}
     </>

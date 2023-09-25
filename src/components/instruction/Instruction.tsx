@@ -4,7 +4,7 @@ const Instruction = () => {
   return (
     <div className='instruction'>
       <div className='mainContainer'>
-        <h3>Instruction</h3>
+        <h2>How to use the tool?</h2>
         <div>
           Create a <strong>.kml file</strong> containing just <strong>1 polygon</strong>.
 

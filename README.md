@@ -8,7 +8,7 @@ Website is hosted at https://oncra.github.io/
 
 Coded with ❤️ by [@iamfranco](https://github.com/iamfranco)
 
-![app demo](public/oncra_app_demo.gif)
+![app demo](public/demo.gif)
 
 ## Development Setup 
 First, install [node](https://nodejs.org/en) and [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)

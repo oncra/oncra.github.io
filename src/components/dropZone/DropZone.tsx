@@ -36,6 +36,8 @@ const DropZone = ({setAgbData, setPolygon, setXY, setRowsStatus, setSelectedYear
     const item = items[0];
     if (item.kind !== "file" || !item.type.includes('kml')) {
       setFileError('File format must be .kml');
+      console.log(item.kind);
+      console.log(item.type);
       return;
     }
 

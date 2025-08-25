@@ -17,7 +17,7 @@ import DataAttribution from './components/dataAttribution/DataAttribution';
 
 preventDefaultDragDropBehaviour();
 
-export const availableYears = [2010, 2017, 2018, 2019, 2020];
+export const availableYears = [2007, 2010, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022];
 
 function App() {
   const [agbData, setAgbData] = useState<(CedaData | null)[]>(availableYears.map(() => null));

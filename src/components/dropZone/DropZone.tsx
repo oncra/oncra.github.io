@@ -34,16 +34,20 @@ const DropZone = ({setAgbData, setPolygon, setXY, setRowsStatus, setSelectedYear
     }
 
     const item = items[0];
-    if (item.kind !== "file" || !item.type.includes('kml')) {
-      setFileError('File format must be .kml');
-      console.log(item.kind);
-      console.log(item.type);
+    if (item.kind !== "file") {
+      setFileError('Please drop a file');
       return;
     }
 
     const file = item.getAsFile();
     if (file == null) {
       setFileError('Unexpected error occurred while loading file');
+      return;
+    }
+
+    // Check if the file is a KML file by extension
+    if (!file.name.toLowerCase().endsWith('.kml')) {
+      setFileError('File format must be .kml');
       return;
     }
 

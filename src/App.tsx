@@ -76,7 +76,8 @@ function App() {
           polygon={polygon}
           rowsStatus={rowsStatus} 
           selectedYear={selectedYear} 
-          setSelectedYear={setSelectedYear}/>
+          setSelectedYear={setSelectedYear}
+          kmlFileName={kmlFileName}/>
 
         <ColourMap 
           width={chartWidth} 

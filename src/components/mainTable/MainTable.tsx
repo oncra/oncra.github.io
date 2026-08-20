@@ -9,6 +9,7 @@ import { getGridCrossDataMatrixFromAGBPolygon } from '../../scripts/math/RayCast
 import { calculateArea } from '../../scripts/math/AreaUtils';
 import { sum } from '../../scripts/math/MathUtils';
 import { GetGridMultiplier } from './scripts/AGBCalculationUtils';
+import CSVExportButton from '../csvExportButton/CSVExportButton';
 
 interface Props {
   agbData: (CedaData | null) [],
@@ -16,12 +17,13 @@ interface Props {
   rowsStatus: RowStatus[],
   selectedYear: number | null,
   setSelectedYear: Dispatch<SetStateAction<number | null>>,
+  kmlFileName: string | null,
 }
 
 export const getCarbon = (agb: number | null | undefined) => agb !== null && agb !== undefined ? agb / 2 : null;
 export const getCO2 = (agb: number | null | undefined) => agb !== null && agb !== undefined ? agb / 2 * 44 / 12 : null;
 
-const MainTable = ({agbData, polygon, rowsStatus, selectedYear, setSelectedYear}: Props) => {
+const MainTable = ({agbData, polygon, rowsStatus, selectedYear, setSelectedYear, kmlFileName}: Props) => {
   const {gridCrossDataMatrix, xGrids, yGrids} = getGridCrossDataMatrixFromAGBPolygon(polygon);
 
   let { polygonXY, gridMultiplier } = GetGridMultiplier(gridCrossDataMatrix, xGrids, yGrids, polygon);
@@ -91,6 +93,14 @@ const MainTable = ({agbData, polygon, rowsStatus, selectedYear, setSelectedYear}
   
   return (
     <div className='tableContainer'>
+      <div className='tableHeader'>
+        <h3>Carbon Data Results</h3>
+        <CSVExportButton 
+          agbData={agbData}
+          polygon={polygon}
+          kmlFileName={kmlFileName}
+        />
+      </div>
       <table>
         <tbody>
           <tr key='tableHeader'>
